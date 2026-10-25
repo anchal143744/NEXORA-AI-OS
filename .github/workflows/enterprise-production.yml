@@ -64,7 +64,10 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - name: Use the repository package manager
-        run: npm install --global npm@12.2.1
+        run: |
+          npm install --prefix "$RUNNER_TEMP/nexora-npm" --ignore-scripts --no-audit --no-fund --package-lock=false npm@12.2.1
+          echo "$RUNNER_TEMP/nexora-npm/node_modules/.bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/nexora-npm/node_modules/.bin/npm" --version
       - run: npm ci
       - run: npm run lint
       - run: npx prisma validate --schema prisma/schema.prisma
