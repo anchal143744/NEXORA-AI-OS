@@ -56,7 +56,11 @@ jobs:
       DATABASE_URL: postgresql://nexora:change-me@localhost:5432/nexora?schema=public
       REDIS_URL: redis://localhost:6379
       JWT_SECRET: ci-jwt-secret-that-is-long-enough-for-validation
+      JWT_ACCESS_SECRET: ci-access-secret-for-isolated-validation-only
+      JWT_REFRESH_SECRET: ci-refresh-secret-for-isolated-validation-only
       NEXORA_SECRET_KEY: ci-encryption-secret-that-is-long-enough
+      EMAIL_DELIVERY_ENABLED: "false"
+      NEXORA_AI_DRAFTS_ENABLED: "false"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -75,6 +79,18 @@ jobs:
       - run: npx prisma db push --schema prisma/schema.prisma --skip-generate
       - run: npm run typecheck
       - run: npm run build
+      - name: Prepare isolated CI test configuration
+        run: |
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          const keys = ['DATABASE_URL', 'REDIS_URL', 'JWT_SECRET', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET', 'NEXORA_SECRET_KEY', 'EMAIL_DELIVERY_ENABLED', 'NEXORA_AI_DRAFTS_ENABLED'];
+          const entries = keys.map(key => {
+            const value = process.env[key];
+            if (!value || /[\r\n]/.test(value)) throw new Error(`Missing or invalid CI configuration: ${key}`);
+            return `${key}=${value}`;
+          });
+          writeFileSync('.env', entries.join('\n') + '\n', { mode: 0o600, flag: 'wx' });
+          NODE
       - run: npm run test
       - run: npm run crm:rbac
       - run: npm run api:e2e

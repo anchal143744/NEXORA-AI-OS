@@ -136,7 +136,7 @@ for (const file of controllerFiles) {
 }
 if (guardedControllers < 25) fail(`Unexpectedly low JwtAuthGuard controller coverage: ${guardedControllers}`);
 
-run('npx.cmd', ['prisma', 'validate', '--schema', 'prisma/schema.prisma']);
+run(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['prisma', 'validate', '--schema', 'prisma/schema.prisma']);
 
 console.log(JSON.stringify({
   status: failures.length === 0 ? 'passed' : 'failed',
