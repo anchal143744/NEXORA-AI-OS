@@ -20,7 +20,7 @@ on:
         options: [staging, production]
 
 env:
-  NODE_VERSION: "22"
+  NODE_VERSION: "22.22.2"
   REGISTRY: ghcr.io
   API_IMAGE: ghcr.io/${{ github.repository_owner }}/nexora-api
   WORKER_IMAGE: ghcr.io/${{ github.repository_owner }}/nexora-worker
@@ -63,6 +63,8 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+      - name: Use the repository package manager
+        run: npm install --global npm@12.2.1
       - run: npm ci
       - run: npm run lint
       - run: npx prisma validate --schema prisma/schema.prisma
@@ -78,6 +80,7 @@ jobs:
 
   docker-build:
     name: Docker Build
+    if: github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     permissions:
@@ -110,7 +113,7 @@ jobs:
 
   deploy:
     name: Deploy With Approval
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
+    if: github.event_name == 'workflow_dispatch'
     needs: docker-build
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || github.event.inputs.environment || 'staging' }}
