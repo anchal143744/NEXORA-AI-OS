@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexora-redis
+  namespace: nexora
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexora-redis
+  template:
+    metadata:
+      labels:
+        app: nexora-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        command: ["redis-server", "--appendonly", "yes"]
+        ports:
+          - containerPort: 6379
+        readinessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          initialDelaySeconds: 10
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexora-redis
+  namespace: nexora
+spec:
+  selector:
+    app: nexora-redis
+  ports:
+    - port: 6379
+      targetPort: 6379

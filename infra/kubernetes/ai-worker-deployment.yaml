@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexora-ai-worker
+  namespace: nexora
+  labels:
+    app: nexora-ai-worker
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: nexora-ai-worker
+  template:
+    metadata:
+      labels:
+        app: nexora-ai-worker
+    spec:
+      terminationGracePeriodSeconds: 45
+      containers:
+      - name: nexora-ai-worker
+        image: nexora/ai-worker:latest
+        imagePullPolicy: IfNotPresent
+        command: ["npm", "--workspace", "@nexora/api", "run", "ai-worker:start"]
+        envFrom:
+          - configMapRef:
+              name: nexora-config
+          - secretRef:
+              name: nexora-secrets
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"

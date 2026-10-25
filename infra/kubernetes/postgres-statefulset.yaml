@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nexora-postgres
+  namespace: nexora
+spec:
+  serviceName: nexora-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexora-postgres
+  template:
+    metadata:
+      labels:
+        app: nexora-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16-alpine
+        ports:
+          - containerPort: 5432
+        env:
+          - name: POSTGRES_DB
+            value: nexora
+          - name: POSTGRES_USER
+            value: nexora
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: nexora-secrets
+                key: POSTGRES_PASSWORD
+                optional: true
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-U", "nexora", "-d", "nexora"]
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        volumeMounts:
+          - name: postgres-data
+            mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 100Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexora-postgres
+  namespace: nexora
+spec:
+  selector:
+    app: nexora-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432

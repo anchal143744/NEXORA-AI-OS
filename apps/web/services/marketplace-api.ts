@@ -1,0 +1,28 @@
+const jsonHeaders = { 'Content-Type': 'application/json' };
+
+export const marketplaceApi = {
+  catalog: (category?: string) => fetch(`/api/v1/marketplace/catalog${category ? `?category=${encodeURIComponent(category)}` : ''}`),
+  app: (id: string) => fetch(`/api/v1/marketplace/apps/${id}`),
+  createApp: (payload: unknown) => fetch('/api/v1/marketplace/apps', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  createVersion: (appId: string, payload: unknown) => fetch(`/api/v1/marketplace/apps/${appId}/versions`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  createPermission: (appId: string, payload: unknown) => fetch(`/api/v1/marketplace/apps/${appId}/permissions`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  installations: () => fetch('/api/v1/marketplace/installations'),
+  installApp: (appId: string, payload: unknown) => fetch(`/api/v1/marketplace/apps/${appId}/install`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  uninstallApp: (installationId: string) => fetch(`/api/v1/marketplace/installations/${installationId}/uninstall`, { method: 'POST' }),
+  extensionSdk: () => fetch('/api/v1/extensions/sdk'),
+  extensionDefinitions: () => fetch('/api/v1/extensions/definitions'),
+  createExtensionDefinition: (payload: unknown) => fetch('/api/v1/extensions/definitions', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  extensionHooks: () => fetch('/api/v1/extensions/hooks'),
+  registerHook: (definitionId: string, payload: unknown) => fetch(`/api/v1/extensions/definitions/${definitionId}/hooks`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  extensionPoints: () => fetch('/api/v1/extensions/extension-points'),
+  registerExtensionPoint: (definitionId: string, payload: unknown) => fetch(`/api/v1/extensions/definitions/${definitionId}/extension-points`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  partners: () => fetch('/api/v1/partners'),
+  createPartner: (payload: unknown) => fetch('/api/v1/partners', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  partnerServices: () => fetch('/api/v1/partners/services'),
+  addPartnerCertification: (partnerId: string, payload: unknown) => fetch(`/api/v1/partners/${partnerId}/certifications`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  addPartnerService: (partnerId: string, payload: unknown) => fetch(`/api/v1/partners/${partnerId}/services`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  industryTemplates: () => fetch('/api/v1/industry-templates'),
+  createIndustryTemplate: (payload: unknown) => fetch('/api/v1/industry-templates', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  bootstrapIndustryTemplates: () => fetch('/api/v1/industry-templates/bootstrap', { method: 'POST' }),
+  installIndustryTemplate: (templateId: string, payload: unknown) => fetch(`/api/v1/industry-templates/${templateId}/install`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+};

@@ -1,0 +1,6 @@
+﻿import { Injectable } from '@nestjs/common';
+import { AiService } from '../../ai/ai.service';
+import { EventBusService } from '../../events/event-bus.service';
+import { PrismaService } from '../../../infrastructure/database/prisma.service';
+@Injectable()
+export class InsightEngine { constructor(private readonly ai: AiService, private readonly prisma: PrismaService, private readonly events: EventBusService) {} async generate(input: { tenantId: string; workspaceId?: string; type: string; context: Record<string, unknown> }) { const completion = await this.ai.complete({ tenantId: input.tenantId, model: 'gpt-4.1-mini', messages: [{ role: 'system', content: `Generate ${input.type} executive insight for NEXORA AI.` }, { role: 'user', content: JSON.stringify(input.context) }] }); const insight = await this.prisma.aiInsight.create({ data: { tenantId: input.tenantId, title: `${input.type} insight`, body: completion.content, severity: 'INFO', metadata: { type: input.type, workspaceId: input.workspaceId } } }); await this.events.publish({ tenantId: input.tenantId, workspaceId: input.workspaceId, type: 'ai.insight.generated', source: 'insight-engine', subject: { type: 'aiInsight', id: insight.id }, payload: { insightType: input.type } }); return insight; } }

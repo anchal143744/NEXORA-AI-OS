@@ -1,0 +1,6 @@
+﻿import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsDateString, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+export class CreateFinanceInvoiceDto { @ApiProperty() @IsUUID() billingAccountId!: string; @ApiProperty() @IsString() invoiceNumber!: string; @ApiProperty() @IsString() currency!: string; @ApiProperty() @IsNumber() subtotal!: number; @ApiProperty() @IsNumber() tax!: number; @ApiProperty() @IsNumber() total!: number; @ApiPropertyOptional() @IsOptional() @IsDateString() dueAt?: string; }
+export class UpdateInvoiceDto { @ApiPropertyOptional() @IsOptional() @IsString() status?: string; @ApiPropertyOptional() @IsOptional() @IsNumber() total?: number; @ApiPropertyOptional() @IsOptional() @IsDateString() paidAt?: string; }
+export class CreateExpenseDto { @ApiProperty() @IsString() category!: string; @ApiPropertyOptional() @IsOptional() @IsString() vendor?: string; @ApiPropertyOptional() @IsOptional() @IsString() description?: string; @ApiProperty() @IsNumber() amount!: number; @ApiProperty() @IsString() currency!: string; @ApiProperty() @IsDateString() incurredAt!: string; }
+export class UpdateExpenseDto { @ApiPropertyOptional() @IsOptional() @IsString() status?: string; @ApiPropertyOptional() @IsOptional() @IsNumber() amount?: number; @ApiPropertyOptional() @IsOptional() @IsString() description?: string; }

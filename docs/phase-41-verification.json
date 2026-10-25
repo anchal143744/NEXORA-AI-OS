@@ -1,0 +1,42 @@
+{
+  "modelCount": 444,
+  "endpointCount": 1161,
+  "phaseEndpointCount": 32,
+  "createdFileCount": 20,
+  "touchedFileCount": 30,
+  "missingFileCount": 0,
+  "createdFiles": [
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\dto\\procurement.dto.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\vendor-management.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\procurement-workflow.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\spend-intelligence.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\procurement.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\controllers\\vendors.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\controllers\\vendor-contracts.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\controllers\\procurement.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\controllers\\purchase-orders.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\controllers\\procurement-approvals.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\controllers\\spend-intelligence.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\controllers\\budgets.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\controllers\\cost-optimization.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\procurement\\procurement.module.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\services\\procurement-api.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\procurement\\procurement-workspace.tsx",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\procurement-center.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\vendor-management.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\spend-intelligence.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\cost-optimization.md"
+  ],
+  "changedFiles": [
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\README.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\prisma\\schema.prisma",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\app.module.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\infrastructure\\database\\prisma.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\events\\contracts\\domain-event.contract.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\events\\registry\\event-registry.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\page.tsx",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\roadmap.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\changelog.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\current-status.md"
+  ]
+}

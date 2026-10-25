@@ -1,0 +1,18 @@
+[sources.app_logs]
+type = "file"
+include = ["/var/log/nexora/*.log"]
+
+[transforms.redact_pii]
+type = "remap"
+inputs = ["app_logs"]
+source = '''
+.tenant_id = .tenant_id ?? "unknown"
+.message = replace!(.message, r'(?i)(password|token|secret)=\S+', "$1=[REDACTED]")
+'''
+
+[sinks.central]
+type = "http"
+inputs = ["redact_pii"]
+uri = "https://logs.nexora.example.com/ingest"
+encoding.codec = "json"
+healthcheck.enabled = true

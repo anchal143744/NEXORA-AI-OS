@@ -1,0 +1,85 @@
+{
+  "phase": 52,
+  "version": "1.2.0",
+  "previousVersion": "1.1.0",
+  "modelCount": 818,
+  "endpointCount": 2002,
+  "serviceCount": 321,
+  "eventRegistryCount": 504,
+  "componentCount": 14,
+  "shellSurfaceCount": 7,
+  "phaseModules": [
+    "Welcome Experience",
+    "Authentication",
+    "Signup Experience",
+    "Organization Creation",
+    "Business Setup Wizard",
+    "AI Setup Experience",
+    "Workspace Auto-Generation",
+    "Onboarding Progress Engine",
+    "Enterprise Invite System",
+    "Role Assignment",
+    "First-Time User Experience",
+    "AI Welcome Copilot"
+  ],
+  "routes": [
+    "/",
+    "/welcome",
+    "/auth/login",
+    "/auth/signup",
+    "/onboarding",
+    "/invite"
+  ],
+  "createdFilesCount": 40,
+  "touchedFilesCount": 4,
+  "requiredFilesCount": 49,
+  "missingFilesCount": 0,
+  "missingFiles": [],
+  "validation": [
+    {
+      "name": "npm install",
+      "status": "PASSED",
+      "detail": "Workspace dependencies and package-lock refreshed for version 1.2.0."
+    },
+    {
+      "name": "Web TypeScript compile",
+      "status": "PASSED",
+      "detail": "npm run web:typecheck completed successfully."
+    },
+    {
+      "name": "Phase 52 tests",
+      "status": "PASSED",
+      "detail": "node --test tests/phase52-auth-onboarding.test.mjs passed 4 tests."
+    },
+    {
+      "name": "Next build",
+      "status": "PASSED",
+      "detail": "npm run web:build generated 9 static pages including /auth/login, /auth/signup, /onboarding and /invite."
+    },
+    {
+      "name": "npm audit",
+      "status": "COMPLETED_WITH_TRACKED_EXCEPTIONS",
+      "detail": "0 critical, 0 high, 2 moderate Next/PostCSS advisories remain; npm offers only a major Next downgrade."
+    },
+    {
+      "name": "HTTP route smoke",
+      "status": "PASSED",
+      "detail": "/, /welcome, /auth/login, /auth/signup, /onboarding and /invite returned HTTP 200 with Phase 52 content markers."
+    },
+    {
+      "name": "Browser visual smoke",
+      "status": "BLOCKED_BY_ENVIRONMENT",
+      "detail": "In-app browser bridge failed with the Windows sandbox setup refresh issue; build and HTTP checks passed."
+    }
+  ],
+  "audit": {
+    "total": 2,
+    "moderate": 2,
+    "high": 0,
+    "critical": 0,
+    "trackedExceptions": [
+      "next/postcss moderate advisory with no safe non-major npm remediation"
+    ]
+  },
+  "nextPhase": "Phase 53 - Business Setup Wizard, AI Discovery and Workspace Intelligence"
+}

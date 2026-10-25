@@ -1,0 +1,236 @@
+{
+  "generatedFor": "NEXORA AI OS staging release candidate",
+  "version": "1.9.0-src.1",
+  "policy": "Representative staging data for production-like QA. Apply only to isolated staging or local verification environments.",
+  "industries": [
+    "saas",
+    "retail",
+    "manufacturing",
+    "healthcare",
+    "agency"
+  ],
+  "organizations": [
+    {
+      "key": "saas-growth",
+      "name": "Nexora SaaS Growth Lab",
+      "owner": {
+        "name": "Maya Chen",
+        "email": "nexora-src-saas@example.com",
+        "role": "Founder"
+      },
+      "profile": {
+        "industry": "saas",
+        "businessType": "startup",
+        "teamSize": "11_50",
+        "revenueRange": "1m_10m",
+        "growthStage": "growth",
+        "country": "US",
+        "currency": "USD",
+        "language": "en",
+        "timezone": "America/New_York"
+      },
+      "goals": [
+        "increase_pipeline_velocity",
+        "improve_activation",
+        "forecast_revenue"
+      ],
+      "modules": [
+        "crm",
+        "finance",
+        "projects",
+        "analytics",
+        "ai_agents"
+      ],
+      "kpis": [
+        "MRR",
+        "ARR",
+        "Pipeline Value",
+        "Activation Rate",
+        "Runway"
+      ],
+      "sampleRecords": {
+        "leads": 18,
+        "opportunities": 9,
+        "invoices": 12,
+        "projects": 6
+      }
+    },
+    {
+      "key": "retail-omnichannel",
+      "name": "Nexora Retail Collective",
+      "owner": {
+        "name": "Ava Roberts",
+        "email": "nexora-src-retail@example.com",
+        "role": "Operations Director"
+      },
+      "profile": {
+        "industry": "retail",
+        "businessType": "small_business",
+        "teamSize": "51_200",
+        "revenueRange": "10m_100m",
+        "growthStage": "scale",
+        "country": "GB",
+        "currency": "GBP",
+        "language": "en",
+        "timezone": "Europe/London"
+      },
+      "goals": [
+        "optimize_inventory",
+        "reduce_stockouts",
+        "improve_customer_retention"
+      ],
+      "modules": [
+        "inventory",
+        "finance",
+        "crm",
+        "analytics",
+        "communications"
+      ],
+      "kpis": [
+        "Inventory Turns",
+        "Gross Margin",
+        "Stockout Risk",
+        "Customer Retention"
+      ],
+      "sampleRecords": {
+        "products": 320,
+        "warehouses": 4,
+        "shipments": 48,
+        "customers": 140
+      }
+    },
+    {
+      "key": "manufacturing-precision",
+      "name": "Nexora Precision Works",
+      "owner": {
+        "name": "Daniel Weber",
+        "email": "nexora-src-manufacturing@example.com",
+        "role": "Plant Manager"
+      },
+      "profile": {
+        "industry": "manufacturing",
+        "businessType": "manufacturing",
+        "teamSize": "201_1000",
+        "revenueRange": "100m_plus",
+        "growthStage": "maturity",
+        "country": "DE",
+        "currency": "EUR",
+        "language": "de",
+        "timezone": "Europe/Berlin"
+      },
+      "goals": [
+        "increase_throughput",
+        "improve_quality",
+        "reduce_downtime"
+      ],
+      "modules": [
+        "manufacturing",
+        "inventory",
+        "assets",
+        "finance",
+        "analytics"
+      ],
+      "kpis": [
+        "OEE",
+        "Defect Rate",
+        "Downtime Hours",
+        "Production Cost"
+      ],
+      "sampleRecords": {
+        "workOrders": 80,
+        "assets": 95,
+        "qualityChecks": 240,
+        "suppliers": 32
+      }
+    },
+    {
+      "key": "healthcare-ops",
+      "name": "Nexora Care Operations",
+      "owner": {
+        "name": "Priya Nair",
+        "email": "nexora-src-healthcare@example.com",
+        "role": "Administrator"
+      },
+      "profile": {
+        "industry": "healthcare",
+        "businessType": "enterprise",
+        "teamSize": "201_1000",
+        "revenueRange": "10m_100m",
+        "growthStage": "scale",
+        "country": "IN",
+        "currency": "INR",
+        "language": "en",
+        "timezone": "Asia/Kolkata"
+      },
+      "goals": [
+        "improve_staffing",
+        "track_compliance",
+        "optimize_service_requests"
+      ],
+      "modules": [
+        "hr",
+        "service_center",
+        "finance",
+        "compliance",
+        "analytics"
+      ],
+      "kpis": [
+        "Attendance Rate",
+        "SLA Compliance",
+        "Compliance Tasks",
+        "Service Resolution Time"
+      ],
+      "sampleRecords": {
+        "employees": 420,
+        "departments": 16,
+        "serviceTickets": 75,
+        "complianceControls": 28
+      }
+    },
+    {
+      "key": "agency-growth",
+      "name": "Nexora Strategy Studio",
+      "owner": {
+        "name": "Lena Martinez",
+        "email": "nexora-src-agency@example.com",
+        "role": "Managing Partner"
+      },
+      "profile": {
+        "industry": "agency",
+        "businessType": "agency",
+        "teamSize": "11_50",
+        "revenueRange": "1m_10m",
+        "growthStage": "growth",
+        "country": "CA",
+        "currency": "CAD",
+        "language": "en",
+        "timezone": "America/Toronto"
+      },
+      "goals": [
+        "improve_project_margin",
+        "grow_accounts",
+        "automate_reporting"
+      ],
+      "modules": [
+        "crm",
+        "projects",
+        "finance",
+        "documents",
+        "analytics",
+        "ai_agents"
+      ],
+      "kpis": [
+        "Project Margin",
+        "Utilization",
+        "Pipeline Value",
+        "Client Health"
+      ],
+      "sampleRecords": {
+        "accounts": 28,
+        "projects": 34,
+        "retainers": 16,
+        "reports": 22
+      }
+    }
+  ]
+}

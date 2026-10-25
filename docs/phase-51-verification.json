@@ -1,0 +1,67 @@
+{
+  "phase": 51,
+  "version": "1.1.0",
+  "backendVersion": "1.0.0-RC1",
+  "modelCount": 818,
+  "endpointCount": 2002,
+  "serviceCount": 321,
+  "eventRegistryCount": 504,
+  "componentCount": 14,
+  "shellSurfaceCount": 7,
+  "createdFilesCount": 24,
+  "touchedFilesCount": 21,
+  "requiredFilesCount": 50,
+  "missingFilesCount": 0,
+  "missingFiles": [],
+  "validation": [
+    {
+      "name": "npm install",
+      "status": "PASSED",
+      "detail": "Workspace dependencies and package-lock refreshed for version 1.1.0."
+    },
+    {
+      "name": "npm audit",
+      "status": "COMPLETED_WITH_TRACKED_EXCEPTIONS",
+      "detail": "0 critical, 0 high, 2 moderate Next/PostCSS advisories remain; npm offers only a major Next downgrade."
+    },
+    {
+      "name": "Web TypeScript compile",
+      "status": "PASSED",
+      "detail": "npm run web:typecheck."
+    },
+    {
+      "name": "Next build",
+      "status": "PASSED",
+      "detail": "npm run web:build completed successfully. Route / builds as static content with 68.1 kB page size and 182 kB first-load JS."
+    },
+    {
+      "name": "Phase 51 tests",
+      "status": "PASSED",
+      "detail": "node --test tests/phase51-frontend-foundation.test.mjs passed 4 tests."
+    },
+    {
+      "name": "Physical file verification",
+      "status": "PASSED",
+      "detail": "0 required files missing before final report write."
+    },
+    {
+      "name": "HTTP smoke check",
+      "status": "PASSED",
+      "detail": "http://localhost:3000 returned 200 and server-rendered Phase 51 content markers."
+    }
+  ],
+  "audit": {
+    "total": 2,
+    "moderate": 2,
+    "high": 0,
+    "critical": 0,
+    "trackedExceptions": [
+      "next/postcss moderate advisory with no safe non-major npm remediation"
+    ]
+  },
+  "nextPhase": "Phase 52 - Authentication, Welcome Experience and Onboarding Flow",
+  "visualSmoke": {
+    "status": "BLOCKED_BY_ENVIRONMENT",
+    "detail": "In-app browser connection failed twice with the Windows sandbox setup refresh issue; build and HTTP checks passed."
+  }
+}

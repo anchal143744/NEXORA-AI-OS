@@ -1,0 +1,5 @@
+﻿import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { RedisCacheService } from '../../../infrastructure/redis/cache/redis-cache.service';
+@Injectable()
+export class AdvancedRateLimitService { constructor(private readonly cache: RedisCacheService) {} async check(input: { tenantId: string; userId?: string; apiKeyId?: string; workspaceId?: string; route: string; limit?: number; windowSeconds?: number }) { const limit = input.limit ?? 600; const windowSeconds = input.windowSeconds ?? 60; const keys = [`tenant:${input.tenantId}`, input.userId && `user:${input.userId}`, input.apiKeyId && `apiKey:${input.apiKeyId}`, input.workspaceId && `workspace:${input.workspaceId}`].filter(Boolean); for (const key of keys) { const id = `${key}:${input.route}:${Math.floor(Date.now()/1000/windowSeconds)}`; const current = ((await this.cache.get('user-session', input.tenantId, id)) as any)?.count ?? 0; if (current >= limit) throw new HttpException('Rate limit exceeded', HttpStatus.TOO_MANY_REQUESTS); await this.cache.set('user-session', input.tenantId, id, { count: current + 1 }, windowSeconds); } return { allowed: true, limit, windowSeconds }; } }
+

@@ -1,0 +1,125 @@
+{
+  "phase": 58,
+  "version": "1.8.0",
+  "previousVersion": "1.7.0",
+  "status": "implemented",
+  "modules": [
+    "AI Agents Home",
+    "Agent Builder",
+    "Agent Templates Marketplace",
+    "Agent Deployment Center",
+    "Agent Monitoring",
+    "Agent Execution History",
+    "Agent Permissions",
+    "Multi-Agent Collaboration",
+    "Workflow Automation Center",
+    "Agent Analytics",
+    "Enterprise Automation Dashboard",
+    "AI Agent Copilot"
+  ],
+  "routes": [
+    {
+      "path": "/ai-agents",
+      "module": "AI Agents Workspace"
+    },
+    {
+      "path": "/ai-agents/agents",
+      "module": "AI Agents Home"
+    },
+    {
+      "path": "/ai-agents/templates",
+      "module": "Agent Templates Marketplace"
+    },
+    {
+      "path": "/ai-agents/deployments",
+      "module": "Agent Deployment Center"
+    },
+    {
+      "path": "/ai-agents/monitoring",
+      "module": "Agent Monitoring"
+    },
+    {
+      "path": "/ai-agents/executions",
+      "module": "Agent Execution History"
+    },
+    {
+      "path": "/ai-agents/permissions",
+      "module": "Agent Permissions"
+    },
+    {
+      "path": "/ai-agents/collaboration",
+      "module": "Multi-Agent Collaboration"
+    },
+    {
+      "path": "/ai-agents/workflows",
+      "module": "Workflow Automation Center"
+    },
+    {
+      "path": "/ai-agents/analytics",
+      "module": "Agent Analytics"
+    },
+    {
+      "path": "/ai-agents/automation",
+      "module": "Enterprise Automation Dashboard"
+    },
+    {
+      "path": "/ai-agents/copilot",
+      "module": "AI Agent Copilot"
+    },
+    {
+      "path": "/workspace/ai",
+      "module": "AI Agents Workspace compatibility route"
+    }
+  ],
+  "createdFiles": [
+    "apps/web/types/agent-workspace.ts",
+    "apps/web/lib/agent-workspace.ts",
+    "apps/web/services/agent-workspace-api.ts",
+    "apps/web/stores/agent-workspace-store.ts",
+    "apps/web/hooks/use-agent-workspace-actions.ts",
+    "apps/web/features/ai-agents/ai-agents-navigation.tsx",
+    "apps/web/features/ai-agents/ai-agents-home.tsx",
+    "apps/web/features/ai-agents/agent-builder.tsx",
+    "apps/web/features/ai-agents/agent-templates-marketplace.tsx",
+    "apps/web/features/ai-agents/agent-deployment-center.tsx",
+    "apps/web/features/ai-agents/agent-monitoring.tsx",
+    "apps/web/features/ai-agents/agent-execution-history.tsx",
+    "apps/web/features/ai-agents/agent-permissions.tsx",
+    "apps/web/features/ai-agents/multi-agent-collaboration.tsx",
+    "apps/web/features/ai-agents/workflow-automation-center.tsx",
+    "apps/web/features/ai-agents/agent-analytics.tsx",
+    "apps/web/features/ai-agents/enterprise-automation-dashboard.tsx",
+    "apps/web/features/ai-agents/ai-agent-copilot.tsx",
+    "apps/web/features/ai-agents/ai-agents-workspace.tsx",
+    "apps/web/app/ai-agents/page.tsx",
+    "apps/web/app/workspace/ai/page.tsx",
+    "apps/web/app/ai-agents/agents/page.tsx",
+    "apps/web/app/ai-agents/templates/page.tsx",
+    "apps/web/app/ai-agents/deployments/page.tsx",
+    "apps/web/app/ai-agents/monitoring/page.tsx",
+    "apps/web/app/ai-agents/executions/page.tsx",
+    "apps/web/app/ai-agents/permissions/page.tsx",
+    "apps/web/app/ai-agents/collaboration/page.tsx",
+    "apps/web/app/ai-agents/workflows/page.tsx",
+    "apps/web/app/ai-agents/analytics/page.tsx",
+    "apps/web/app/ai-agents/automation/page.tsx",
+    "apps/web/app/ai-agents/copilot/page.tsx",
+    "tests/phase58-ai-agents-workspace.test.mjs",
+    "docs/phase-58-ai-agents-workspace-report.md",
+    "docs/phase-58-agent-builder-report.md",
+    "docs/phase-58-monitoring-report.md",
+    "docs/phase-58-automation-center-report.md",
+    "docs/phase-58-agent-analytics-report.md",
+    "docs/phase-58-enterprise-automation-report.md",
+    "docs/phase-58-ai-copilot-report.md",
+    "docs/phase-58-ux-report.md",
+    "docs/phase-58-accessibility-report.md",
+    "docs/phase-58-implementation.json"
+  ],
+  "touchedFiles": [
+    "package.json",
+    "apps/web/package.json",
+    "apps/web/features/workspace/workspace-config.ts"
+  ],
+  "generatedAt": "2026-06-20T10:32:02.409Z"
+}

@@ -1,0 +1,135 @@
+name: Enterprise Production Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+env:
+  NODE_VERSION: "22"
+  REGISTRY: ghcr.io
+  API_IMAGE: ghcr.io/${{ github.repository_owner }}/nexora-api
+  WORKER_IMAGE: ghcr.io/${{ github.repository_owner }}/nexora-worker
+
+jobs:
+  validate:
+    name: Lint, Typecheck, Build and Test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: nexora
+          POSTGRES_USER: nexora
+          POSTGRES_PASSWORD: change-me
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nexora -d nexora"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://nexora:change-me@localhost:5432/nexora?schema=public
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: ci-jwt-secret-that-is-long-enough-for-validation
+      NEXORA_SECRET_KEY: ci-encryption-secret-that-is-long-enough
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npx prisma validate --schema prisma/schema.prisma
+      - run: npx prisma generate --schema prisma/schema.prisma
+      - run: npx prisma db push --schema prisma/schema.prisma --skip-generate
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run test
+      - run: npm run crm:rbac
+      - run: npm run api:e2e
+      - run: npm run v1:runtime
+      - run: npm run security:scan
+
+  docker-build:
+    name: Docker Build
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        if: github.event_name != 'pull_request'
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.api
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ env.API_IMAGE }}:${{ github.sha }}
+            ${{ env.API_IMAGE }}:latest
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.worker
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ env.WORKER_IMAGE }}:${{ github.sha }}
+            ${{ env.WORKER_IMAGE }}:latest
+
+  deploy:
+    name: Deploy With Approval
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
+    needs: docker-build
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || github.event.inputs.environment || 'staging' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure kubectl
+        uses: azure/setup-kubectl@v4
+      - name: Apply manifests
+        run: |
+          kubectl apply -f infra/kubernetes/namespace.yaml
+          kubectl apply -f infra/kubernetes/configmap.yaml
+          kubectl apply -f infra/kubernetes/secret.template.yaml --dry-run=server
+          kubectl apply -f infra/kubernetes/service.yaml
+          kubectl apply -f infra/kubernetes/api-deployment.yaml
+          kubectl apply -f infra/kubernetes/worker-deployment.yaml
+          kubectl apply -f infra/kubernetes/redis-deployment.yaml
+          kubectl apply -f infra/kubernetes/ingress.yaml
+          kubectl apply -f infra/kubernetes/hpa.yaml
+      - name: Rollout status
+        run: |
+          kubectl rollout status deployment/nexora-api -n nexora --timeout=180s
+          kubectl rollout status deployment/nexora-worker -n nexora --timeout=180s

@@ -1,0 +1,9 @@
+﻿import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../../infrastructure/database/prisma.service';
+import { EventBusService } from '../../events/event-bus.service';
+import { TenantContextService } from '../../tenants/tenant-context.service';
+import { BusinessHealthService } from '../executive/business-health.service';
+import { PredictionEngine } from './prediction.engine';
+import { RiskAnalyzer } from './risk-analyzer.service';
+@Injectable()
+export class AlertEngine { constructor(private readonly context: TenantContextService, private readonly health: BusinessHealthService, private readonly prediction: PredictionEngine, private readonly risk: RiskAnalyzer, private readonly prisma: PrismaService, private readonly events: EventBusService) {} async generate() { const tenantId = this.context.currentTenantId(); const workspaceId = this.context.currentWorkspaceId(); const health = await this.health.score(); const defs = [ ['revenue_drop_risk', Number(health.values['finance.revenue']), 1, -10], ['cash_flow_risk', Number(health.values['finance.cash_flow']), 1, -15], ['lead_conversion_drop', Number(health.values['crm.conversion_rate']), 15, -8], ['employee_attrition_risk', Number(health.values['hr.retention_rate']), 80, -5], ['workflow_failure_risk', Number(health.values['operations.workflow_success_rate']), 90, -5] ]; const alerts = []; for (const [key,current,threshold,trend] of defs as any[]) { const score = this.prediction.scoreRisk(current, trend, threshold); if (score < 35) continue; const alert = await this.prisma.predictiveAlert.create({ data: { tenantId, workspaceId, alertType: key, severity: this.risk.classify(score), score, signal: { current, threshold, trend }, status: 'OPEN' } }); alerts.push(alert); await this.events.publish({ tenantId, workspaceId, type: 'alert.generated', source: 'alert-engine', subject: { type: 'predictiveAlert', id: alert.id }, payload: { alertType: key, score } }); } return alerts; } }

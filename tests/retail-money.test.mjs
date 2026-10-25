@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { decimal, money, quantity, total, round, reconcile } = require('../apps/api/dist/modules/retail/money.js');
+test('decimal addition does not inherit binary floating point error', () => assert.equal(total(['0.1', '0.2']).toFixed(2), '0.30'));
+test('zero, two and three decimal currencies preserve precision', () => { assert.equal(money('123', 0).toFixed(0), '123'); assert.equal(money('12.34', 2).toFixed(2), '12.34'); assert.equal(money('1.234', 3).toFixed(3), '1.234'); assert.throws(() => money('1.1', 0)); assert.throws(() => money('1.234', 2)); });
+test('money rejects negative and oversized values', () => { assert.throws(() => money('-1', 2)); assert.throws(() => money('100000000000000', 2)); assert.throws(() => money('NaN', 2)); });
+test('quantity is nonzero and supports at most four fractional digits', () => { assert.equal(quantity('0.0001').toString(), '0.0001'); assert.throws(() => quantity('0')); assert.throws(() => quantity('0.00001')); assert.throws(() => quantity('-1')); });
+test('half-up rounding handles positive and negative report amounts', () => { assert.equal(round(decimal('1.235'), 2).toString(), '1.24'); assert.equal(round(decimal('-1.235'), 2).toString(), '-1.24'); });
+test('invoice balance states are derived from exact net payments', () => { assert.equal(reconcile(decimal('100'), decimal('30'), null, new Date()).amountDue.toString(), '70'); assert.equal(reconcile(decimal('100'), decimal('100'), null, new Date()).status, 'PAID'); assert.equal(reconcile(decimal('100'), decimal('0'), new Date('2000-01-01'), new Date()).status, 'OVERDUE'); assert.throws(() => reconcile(decimal('100'), decimal('101'), null, new Date())); });

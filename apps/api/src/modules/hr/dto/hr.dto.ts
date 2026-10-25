@@ -1,0 +1,6 @@
+﻿import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
+export class CreateHrEmployeeDto { @ApiProperty() @IsString() employeeNumber!: string; @ApiPropertyOptional() @IsOptional() @IsUUID() userId?: string; @ApiPropertyOptional() @IsOptional() @IsString() department?: string; @ApiPropertyOptional() @IsOptional() @IsString() jobTitle?: string; @ApiPropertyOptional() @IsOptional() @IsDateString() startDate?: string; }
+export class UpdateEmployeeDto { @ApiPropertyOptional() @IsOptional() @IsString() department?: string; @ApiPropertyOptional() @IsOptional() @IsString() jobTitle?: string; @ApiPropertyOptional() @IsOptional() @IsString() employmentStatus?: string; }
+export class CreateDepartmentDto { @ApiProperty() @IsString() name!: string; @ApiPropertyOptional() @IsOptional() @IsUUID() managerUserId?: string; }
+export class AttendanceDto { @ApiProperty() @IsUUID() employeeId!: string; @ApiProperty() @IsDateString() workDate!: string; @ApiProperty() @IsString() status!: string; @ApiPropertyOptional() @IsOptional() @IsDateString() checkInAt?: string; @ApiPropertyOptional() @IsOptional() @IsDateString() checkOutAt?: string; }

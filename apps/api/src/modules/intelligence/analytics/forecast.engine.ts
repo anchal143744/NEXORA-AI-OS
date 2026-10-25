@@ -1,0 +1,4 @@
+﻿import { Injectable } from '@nestjs/common';
+import { EventBusService } from '../../events/event-bus.service';
+@Injectable()
+export class ForecastEngine { constructor(private readonly events: EventBusService) {} async forecast(input: { tenantId: string; workspaceId?: string; metricKey: string; values: number[]; horizon?: number }) { const trend = input.values.length > 1 ? (input.values[input.values.length-1] - input.values[0]) / (input.values.length-1) : 0; const last = input.values[input.values.length-1] ?? 0; const points = Array.from({ length: input.horizon ?? 6 }, (_, i) => Number((last + trend * (i+1)).toFixed(2))); await this.events.publish({ tenantId: input.tenantId, workspaceId: input.workspaceId, type: 'forecast.generated', source: 'forecast-engine', payload: { metricKey: input.metricKey, points } }); return { metricKey: input.metricKey, method: 'linear_trend', points }; } }

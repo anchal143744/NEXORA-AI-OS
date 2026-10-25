@@ -1,0 +1,10 @@
+﻿import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../../infrastructure/database/prisma.service';
+import { TenantContextService } from '../../tenants/tenant-context.service';
+@Injectable()
+export class AgentMemoryService {
+  constructor(private readonly prisma: PrismaService, private readonly context: TenantContextService) {}
+  upsert(input: { scope: string; key: string; value: Record<string, unknown>; workspaceId?: string; businessId?: string; agentKey?: string; conversationId?: string }) { const tenantId = this.context.currentTenantId(); const workspaceId = input.workspaceId ?? this.context.currentWorkspaceId() ?? ''; const agentKey = input.agentKey ?? ''; return this.prisma.agentMemory.upsert({ where: { tenantId_scope_key_workspaceId_agentKey: { tenantId, scope: input.scope, key: input.key, workspaceId, agentKey } }, update: { value: input.value, businessId: input.businessId, conversationId: input.conversationId }, create: { tenantId, workspaceId, businessId: input.businessId, agentKey, conversationId: input.conversationId, scope: input.scope, key: input.key, value: input.value } }); }
+  list(scope?: string, agentKey?: string) { return this.prisma.agentMemory.findMany({ where: { tenantId: this.context.currentTenantId(), workspaceId: this.context.currentWorkspaceId() ?? '', scope, agentKey, deletedAt: null }, orderBy: { updatedAt: 'desc' }, take: 200 }); }
+  async contextBundle(input: { tenantId: string; workspaceId?: string; agentKey?: string }) { const memories = await this.prisma.agentMemory.findMany({ where: { tenantId: input.tenantId, workspaceId: input.workspaceId ?? '', OR: [{ agentKey: input.agentKey ?? '' }, { agentKey: '' }], deletedAt: null }, orderBy: { updatedAt: 'desc' }, take: 100 }); return { goals: memories.filter((m: any) => m.scope === 'goals'), kpis: memories.filter((m: any) => m.scope === 'kpis'), preferences: memories.filter((m: any) => m.scope === 'preferences'), businessRules: memories.filter((m: any) => m.scope === 'business_rules'), pastDecisions: memories.filter((m: any) => m.scope === 'past_decisions') }; }
+}

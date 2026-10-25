@@ -1,0 +1,31 @@
+groups:
+  - name: nexora-production
+    rules:
+      - alert: HighApiErrorRate
+        expr: rate(http_request_errors_total[5m]) / rate(http_requests_total[5m]) > 0.02
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: API error rate is above 2 percent.
+      - alert: HighApiLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[10m])) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: API p95 latency is above 800ms.
+      - alert: QueueBacklog
+        expr: bullmq_waiting_jobs > 1000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: BullMQ backlog exceeds production threshold.
+      - alert: DatabaseConnectionPressure
+        expr: postgres_connection_usage > 0.85
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: PostgreSQL connection usage is above 85 percent.

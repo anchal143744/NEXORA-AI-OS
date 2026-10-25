@@ -1,0 +1,18 @@
+{
+  "phase": 50,
+  "version": "1.0.0-RC1",
+  "api": {
+    "p95Ms": 500,
+    "p99Ms": 1000,
+    "errorRatePercent": 1,
+    "throughputRps": 250
+  },
+  "web": {
+    "firstLoadJsKbBudget": 250,
+    "routeSizeKbBudget": 100
+  },
+  "database": {
+    "queryP95Ms": 200,
+    "migrationValidationRequired": true
+  }
+}

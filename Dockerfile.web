@@ -1,0 +1,32 @@
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY apps/web/package.json apps/web/package.json
+COPY apps/api/package.json apps/api/package.json
+RUN npm ci
+
+FROM deps AS build
+WORKDIR /app
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_API_URL=/api
+ARG NEXORA_API_INTERNAL_URL=http://api:4000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXORA_API_INTERNAL_URL=$NEXORA_API_INTERNAL_URL
+RUN npm run web:build
+
+FROM node:22-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_API_URL=/api
+ARG NEXORA_API_INTERNAL_URL=http://api:4000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXORA_API_INTERNAL_URL=$NEXORA_API_INTERNAL_URL
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/apps/web/package.json ./apps/web/package.json
+COPY --from=build /app/apps/web/.next ./apps/web/.next
+COPY --from=build /app/apps/web/public ./apps/web/public
+EXPOSE 3000
+CMD ["npm", "--workspace", "@nexora/web", "run", "start"]

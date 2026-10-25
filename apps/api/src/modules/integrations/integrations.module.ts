@@ -1,0 +1,30 @@
+﻿import { Module } from '@nestjs/common';
+import { QueueModule } from '../../infrastructure/queues/queue.module';
+import { RedisModule } from '../../infrastructure/redis/redis.module';
+import { AgentModule } from '../agents/agent.module';
+import { EventsModule } from '../events/events.module';
+import { TenantsModule } from '../tenants/tenants.module';
+import { WorkflowModule } from '../workflows/workflow.module';
+import { ApiKeyService } from './api-keys/api-key.service';
+import { ConnectionManager } from './connection-manager.service';
+import { ConnectorRuntime } from './connectors/connector-runtime.service';
+import { IntegrationRegistry } from './connectors/integration-registry.service';
+import { CredentialVault } from './credentials/credential-vault.service';
+import { ExternalEventSubscriptionService } from './event-subscription.service';
+import { IntegrationEngine } from './integration-engine.service';
+import { IntegrationManager } from './integration-manager.service';
+import { IntegrationsController } from './integrations.controller';
+import { OAuthService } from './oauth/oauth.service';
+import { ConnectorProcessor } from './processors/connector.processor';
+import { SyncProcessor } from './processors/sync.processor';
+import { WebhookProcessor } from './processors/webhook.processor';
+import { IntegrationRepository } from './repositories/integration.repository';
+import { SyncAuditService } from './sync/sync-audit.service';
+import { SyncEngine } from './sync/sync-engine.service';
+import { SyncScheduler } from './sync/sync-scheduler.service';
+import { WebhookDispatcher } from './webhooks/webhook-dispatcher.service';
+import { WebhookManager } from './webhooks/webhook-manager.service';
+import { WebhookRetryEngine } from './webhooks/webhook-retry.engine';
+import { WebhookValidator } from './webhooks/webhook-validator.service';
+@Module({ imports: [QueueModule, RedisModule, TenantsModule, EventsModule, WorkflowModule, AgentModule], controllers: [IntegrationsController], providers: [IntegrationRegistry, CredentialVault, IntegrationRepository, ConnectorRuntime, ConnectionManager, IntegrationEngine, IntegrationManager, OAuthService, ApiKeyService, ExternalEventSubscriptionService, WebhookValidator, WebhookDispatcher, WebhookRetryEngine, WebhookManager, SyncAuditService, SyncEngine, SyncScheduler, ConnectorProcessor, WebhookProcessor, SyncProcessor], exports: [IntegrationEngine, IntegrationManager, ApiKeyService, WebhookManager, SyncEngine] })
+export class IntegrationsModule {}

@@ -1,0 +1,43 @@
+{
+  "modelCount": 432,
+  "endpointCount": 1129,
+  "phaseEndpointCount": 33,
+  "createdFileCount": 21,
+  "touchedFileCount": 31,
+  "missingFileCount": 0,
+  "createdFiles": [
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\dto\\revenue-operations.dto.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\revenue-account.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\contract-lifecycle.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\renewal-intelligence.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\revenue-intelligence.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\revenue-operations.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\controllers\\revenue-ops.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\controllers\\contracts.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\controllers\\renewals.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\controllers\\churn-intelligence.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\controllers\\expansion-opportunities.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\controllers\\account-health.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\controllers\\revenue-forecasting.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\controllers\\revenue-risk.controller.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\revenue-operations\\revenue-operations.module.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\services\\revenue-operations-api.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\revenue-operations\\revenue-operations-workspace.tsx",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\revenue-operations.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\contracts-center.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\renewal-intelligence.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\churn-prevention.md"
+  ],
+  "changedFiles": [
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\README.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\prisma\\schema.prisma",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\app.module.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\infrastructure\\database\\prisma.service.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\events\\contracts\\domain-event.contract.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\api\\src\\modules\\events\\registry\\event-registry.ts",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\page.tsx",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\roadmap.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\changelog.md",
+    "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\current-status.md"
+  ]
+}

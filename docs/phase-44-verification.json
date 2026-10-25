@@ -1,0 +1,29 @@
+{
+  "phase": 44,
+  "version": "0.44.0",
+  "generatedAt": "2026-06-14T16:34:13.551Z",
+  "modelCount": 556,
+  "endpointCount": 1410,
+  "serviceCount": 285,
+  "validatorCount": 458,
+  "eventRegistryCount": 352,
+  "phaseModelsAdded": 63,
+  "phaseEndpointsAdded": 138,
+  "phaseEventsAdded": 12,
+  "dashboardsAdded": 12,
+  "createdFilesCount": 37,
+  "touchedFilesCount": 12,
+  "missingFilesCount": 0,
+  "missingFiles": [],
+  "validation": {
+    "npm install": "PASSED - dependencies already up to date; audit remains 5 vulnerabilities (2 moderate, 3 high).",
+    "Prisma validate": "PASSED - prisma/schema.prisma is valid.",
+    "Prisma generate": "PASSED - Prisma Client v6.19.0 generated.",
+    "API TypeScript compile": "PASSED - npm run api:typecheck.",
+    "Web TypeScript compile": "PASSED - npm run web:typecheck.",
+    "Nest build": "PASSED - npm run api:build.",
+    "Next build": "PASSED - npm run web:build.",
+    "Unit tests": "PASSED - Phase 44 workforce calculations, validators and RBAC tests.",
+    "Integration tests": "PASSED - Phase 44 schema, module, API map and event registry tests."
+  }
+}

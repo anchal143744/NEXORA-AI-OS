@@ -1,0 +1,36 @@
+{
+    "compilerOptions":  {
+                            "target":  "ES2022",
+                            "module":  "CommonJS",
+                            "moduleResolution":  "Node",
+                            "strict":  true,
+                            "esModuleInterop":  true,
+                            "experimentalDecorators":  true,
+                            "emitDecoratorMetadata":  true,
+                            "skipLibCheck":  true,
+                            "forceConsistentCasingInFileNames":  true,
+                            "baseUrl":  ".",
+                            "paths":  {
+                                          "@nexora/shared":  [
+                                                                 "packages/shared/src"
+                                                             ],
+                                          "@nexora/shared/*":  [
+                                                                   "packages/shared/src/*"
+                                                               ],
+                                          "@nexora/types":  [
+                                                                "packages/types/src"
+                                                            ],
+                                          "@nexora/types/*":  [
+                                                                  "packages/types/src/*"
+                                                              ],
+                                          "@nexora/config":  [
+                                                                 "packages/config/src"
+                                                             ],
+                                          "@nexora/config/*":  [
+                                                                   "packages/config/src/*"
+                                                               ]
+                                      },
+                            "ignoreDeprecations": "5.0"
+                        }
+}
+

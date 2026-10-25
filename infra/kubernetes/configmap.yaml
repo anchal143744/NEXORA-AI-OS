@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nexora-config
+  namespace: nexora
+data:
+  NODE_ENV: "production"
+  PORT: "4000"
+  API_PORT: "4000"
+  LOG_LEVEL: "info"
+  API_PAYLOAD_LIMIT: "1mb"
+  METRICS_PERSISTENCE_ENABLED: "false"
+  OTEL_SERVICE_NAME: "nexora-api"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+  CORS_ORIGINS: "https://app.nexora.example.com"
+  S3_ENDPOINT: "https://s3.nexora.example.com"
+  S3_BUCKET: "nexora-production"

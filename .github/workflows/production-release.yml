@@ -1,0 +1,18 @@
+name: NEXORA Production Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+jobs:
+  delegate:
+    uses: ./.github/workflows/enterprise-production.yml
+    with:
+      environment: ${{ github.event.inputs.environment }}
+    secrets: inherit

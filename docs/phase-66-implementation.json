@@ -1,0 +1,166 @@
+{
+  "phase": {
+    "number": 66,
+    "name": "Post-Launch Growth, AI Expansion and Global Enterprise Scale Program",
+    "versionFrom": "2.5.0",
+    "versionTo": "2.6.0",
+    "nextPhase": "Phase 67 - Autonomous AI Enterprise, Advanced Reasoning and Self-Optimizing Business Operations",
+    "status": "COMPLETE_WITH_TRACKED_SECURITY_REMEDIATION"
+  },
+  "completedAt": "2026-06-22T07:12:41.125Z",
+  "modules": [
+    "Growth Command Center",
+    "Product Adoption Intelligence",
+    "Customer Expansion Engine",
+    "Enterprise Account Management",
+    "AI Expansion Platform",
+    "Multi-Agent Intelligence Network",
+    "Usage Analytics Center",
+    "Revenue Expansion Intelligence",
+    "Customer Retention Center",
+    "Global Scale Readiness",
+    "Enterprise Success Dashboard",
+    "Executive Growth Intelligence"
+  ],
+  "routes": [
+    "/growth-program",
+    "/growth-program/growth-command-center",
+    "/growth-program/product-adoption",
+    "/growth-program/customer-expansion",
+    "/growth-program/account-management",
+    "/growth-program/ai-expansion",
+    "/growth-program/multi-agent-network",
+    "/growth-program/usage-analytics",
+    "/growth-program/revenue-expansion",
+    "/growth-program/customer-retention",
+    "/growth-program/global-scale",
+    "/growth-program/enterprise-success",
+    "/growth-program/executive-growth",
+    "/workspace/growth-program"
+  ],
+  "createdFiles": [
+    "apps/web/types/growth-program.ts",
+    "apps/web/lib/growth-program.ts",
+    "apps/web/services/growth-program-api.ts",
+    "apps/web/stores/growth-program-store.ts",
+    "apps/web/hooks/use-growth-program-actions.ts",
+    "apps/web/features/growth-program/growth-program-panel.tsx",
+    "apps/web/features/growth-program/growth-program-home.tsx",
+    "apps/web/features/growth-program/growth-program-navigation.tsx",
+    "apps/web/features/growth-program/growth-command-center.tsx",
+    "apps/web/features/growth-program/product-adoption-intelligence.tsx",
+    "apps/web/features/growth-program/customer-expansion-engine.tsx",
+    "apps/web/features/growth-program/enterprise-account-management.tsx",
+    "apps/web/features/growth-program/ai-expansion-platform.tsx",
+    "apps/web/features/growth-program/multi-agent-intelligence-network.tsx",
+    "apps/web/features/growth-program/usage-analytics-center.tsx",
+    "apps/web/features/growth-program/revenue-expansion-intelligence.tsx",
+    "apps/web/features/growth-program/customer-retention-center.tsx",
+    "apps/web/features/growth-program/global-scale-readiness.tsx",
+    "apps/web/features/growth-program/enterprise-success-dashboard.tsx",
+    "apps/web/features/growth-program/executive-growth-intelligence.tsx",
+    "apps/web/features/growth-program/growth-program-workspace.tsx",
+    "apps/web/app/growth-program/page.tsx",
+    "apps/web/app/growth-program/growth-command-center/page.tsx",
+    "apps/web/app/growth-program/product-adoption/page.tsx",
+    "apps/web/app/growth-program/customer-expansion/page.tsx",
+    "apps/web/app/growth-program/account-management/page.tsx",
+    "apps/web/app/growth-program/ai-expansion/page.tsx",
+    "apps/web/app/growth-program/multi-agent-network/page.tsx",
+    "apps/web/app/growth-program/usage-analytics/page.tsx",
+    "apps/web/app/growth-program/revenue-expansion/page.tsx",
+    "apps/web/app/growth-program/customer-retention/page.tsx",
+    "apps/web/app/growth-program/global-scale/page.tsx",
+    "apps/web/app/growth-program/enterprise-success/page.tsx",
+    "apps/web/app/growth-program/executive-growth/page.tsx",
+    "apps/web/app/workspace/growth-program/page.tsx",
+    "scripts/growth-program-readiness-check.mjs",
+    "tests/phase66-growth-program.test.mjs",
+    "docs/phase-66-growth-intelligence-report.md",
+    "docs/phase-66-product-adoption-report.md",
+    "docs/phase-66-expansion-revenue-report.md",
+    "docs/phase-66-customer-retention-report.md",
+    "docs/phase-66-ai-expansion-report.md",
+    "docs/phase-66-global-scale-report.md",
+    "docs/phase-66-executive-growth-report.md",
+    "docs/phase-66-verification-report.md",
+    "docs/phase-66-validation-report.md",
+    "docs/phase-66-physical-verification-report.md",
+    "docs/phase-66-implementation.json",
+    "docs/phase-66-verification.json"
+  ],
+  "updatedFiles": [
+    "README.md",
+    "package.json",
+    "package-lock.json",
+    "apps/web/package.json",
+    "apps/api/package.json",
+    "apps/web/types/workspace.ts",
+    "apps/web/features/workspace/workspace-config.ts",
+    "docs/roadmap.md",
+    "docs/changelog.md",
+    "docs/current-status.md"
+  ],
+  "stats": {
+    "databaseModels": 818,
+    "controllerEndpoints": 2002,
+    "frontendPageFiles": 173,
+    "frontendStaticRoutes": 176,
+    "services": 321,
+    "domainEvents": 504,
+    "growthProgramRoutes": 14,
+    "growthProgramModules": 12,
+    "createdFiles": 49,
+    "updatedFiles": 10
+  },
+  "validation": {
+    "npm install": {
+      "status": "PASSED",
+      "detail": "Dependencies are up to date; npm audit still reports tracked advisories."
+    },
+    "prisma validate": {
+      "status": "PASSED",
+      "detail": "Prisma schema is valid."
+    },
+    "prisma generate": {
+      "status": "PASSED",
+      "detail": "Prisma Client v6.19.3 generated successfully."
+    },
+    "Phase 66 tests": {
+      "status": "PASSED",
+      "detail": "6/6 node tests passed for Growth Program files, data, routes, metadata and versions."
+    },
+    "Growth Program readiness check": {
+      "status": "PASSED",
+      "detail": "Readiness markers and required files passed."
+    },
+    "API TypeScript compile": {
+      "status": "PASSED",
+      "detail": "tsc --noEmit completed for @nexora/api."
+    },
+    "Web TypeScript compile": {
+      "status": "PASSED",
+      "detail": "tsc --noEmit completed for @nexora/web."
+    },
+    "Nest build": {
+      "status": "PASSED",
+      "detail": "API production build completed."
+    },
+    "Next build": {
+      "status": "PASSED",
+      "detail": "Next.js 15.5.19 built 176 static routes successfully."
+    },
+    "HTTP route smoke": {
+      "status": "PASSED",
+      "detail": "14 Phase 66 routes returned HTTP 200 and expected marker text."
+    },
+    "Browser visual smoke": {
+      "status": "BLOCKED_BY_ENVIRONMENT",
+      "detail": "In-app browser automation failed because the local browser sandbox metadata is missing sandboxPolicy."
+    },
+    "npm audit": {
+      "status": "TRACKED_SECURITY_REMEDIATION_REQUIRED",
+      "detail": "12 advisories remain tracked: 3 moderate, 9 high, 0 critical."
+    }
+  }
+}

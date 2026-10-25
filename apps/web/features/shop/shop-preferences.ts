@@ -1,0 +1,4 @@
+export const moduleOptions = [{ key: 'crm', label: 'CRM' }, { key: 'sales', label: 'Sales' }, { key: 'inventory', label: 'Inventory' }, { key: 'finance', label: 'Finance' }, { key: 'operations', label: 'Operations' }, { key: 'intelligence', label: 'Intelligence' }];
+export const widgetOptions = [{ key: 'revenue', label: 'Revenue over time' }, { key: 'customers', label: 'Customer mix' }, { key: 'financials', label: 'Revenue, costs & profit' }, { key: 'followups', label: 'Follow-ups' }, { key: 'stock', label: 'Business & stock counts' }, { key: 'sales', label: 'Recent sales' }];
+export type ShopPreferences = { version: number; modules: string[]; widgets: string[] };
+export const defaultPreferences: ShopPreferences = { version: 0, modules: moduleOptions.map(option => option.key), widgets: widgetOptions.map(option => option.key) };

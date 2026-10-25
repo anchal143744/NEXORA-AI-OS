@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexora-web
+  namespace: nexora
+  labels:
+    app: nexora-web
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: nexora-web
+  template:
+    metadata:
+      labels:
+        app: nexora-web
+    spec:
+      terminationGracePeriodSeconds: 45
+      containers:
+      - name: nexora-web
+        image: nexora/web:latest
+        imagePullPolicy: IfNotPresent
+        command: ["npm", "--workspace", "@nexora/web", "run", "start"]
+        ports:
+          - containerPort: 3000
+        envFrom:
+          - configMapRef:
+              name: nexora-config
+          - secretRef:
+              name: nexora-secrets
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 40
+          periodSeconds: 30

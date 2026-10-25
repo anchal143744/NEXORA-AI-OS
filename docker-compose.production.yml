@@ -1,0 +1,102 @@
+name: nexora-production
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:?REDIS_PASSWORD is required}"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:RELEASE.2026-06-13T11-33-47Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?MINIO_ROOT_USER is required}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD is required}
+    volumes:
+      - minio_data:/data
+
+  migrate:
+    image: ${NEXORA_API_IMAGE:?NEXORA_API_IMAGE is required}
+    env_file: infra/env/.env.production.example
+    command: ["npx", "prisma", "migrate", "deploy", "--schema", "prisma/schema.prisma"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    image: ${NEXORA_API_IMAGE:?NEXORA_API_IMAGE is required}
+    restart: unless-stopped
+    env_file: infra/env/.env.production.example
+    ports:
+      - "4000:4000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_started
+
+  worker:
+    image: ${NEXORA_WORKER_IMAGE:?NEXORA_WORKER_IMAGE is required}
+    restart: unless-stopped
+    env_file: infra/env/.env.production.example
+    depends_on:
+      api:
+        condition: service_started
+      redis:
+        condition: service_healthy
+
+  web:
+    image: ${NEXORA_WEB_IMAGE:?NEXORA_WEB_IMAGE is required}
+    restart: unless-stopped
+    env_file: infra/env/.env.production.example
+    environment:
+      NEXT_PUBLIC_API_URL: /api
+      NEXORA_API_INTERNAL_URL: http://api:4000
+      NEXT_TELEMETRY_DISABLED: "1"
+    depends_on:
+      api:
+        condition: service_started
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/nginx/nexora.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./infra/nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      web:
+        condition: service_started
+      api:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:

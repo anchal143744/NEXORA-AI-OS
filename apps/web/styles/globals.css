@@ -1,0 +1,284 @@
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+/* Preserve existing defaults while upgrading the compiler. Keep global resets
+   in base so utility typography can continue to override them. */
+@theme {
+  --default-ring-width: 3px;
+  --default-ring-color: #3b82f6;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --blur-sm: 4px;
+}
+
+@layer base {
+  *, ::before, ::after, ::backdrop, ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+  input::placeholder, textarea::placeholder { color: var(--color-gray-400); }
+  button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+
+:root {
+  color-scheme: dark;
+  --background: 220 42% 4%;
+  --foreground: 210 40% 98%;
+  --card: 221 34% 8%;
+  --card-foreground: 210 40% 98%;
+  --popover: 221 34% 8%;
+  --popover-foreground: 210 40% 98%;
+  --muted: 219 28% 14%;
+  --muted-foreground: 218 16% 70%;
+  --border: 220 18% 18%;
+  --input: 220 18% 18%;
+  --ring: 42 64% 60%;
+  --nexora-primary: #001D39;
+  --nexora-secondary: #0A4174;
+  --nexora-surface: #49769F;
+  --nexora-accent: #4E8EA2;
+  --nexora-success: #6EA2B3;
+  --nexora-highlight: #7BBDE8;
+  --nexora-background: #BDD8E9;
+  --nexora-gold: #D8B45D;
+  --shell-sidebar-width: 292px;
+  --shell-sidebar-collapsed-width: 84px;
+  --shell-topbar-height: 72px;
+  --nexora-radius-sm: 6px;
+  --nexora-radius-md: 8px;
+  --nexora-radius-lg: 10px;
+  --nexora-shadow-panel: 0 20px 70px rgba(0, 0, 0, 0.34);
+  --nexora-shadow-focus: 0 0 0 3px rgba(216, 180, 93, 0.22);
+  --nexora-motion-fast: 140ms;
+  --nexora-motion-normal: 220ms;
+  --nexora-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.light {
+  color-scheme: light;
+  --background: 210 44% 97%;
+  --foreground: 219 48% 8%;
+  --card: 0 0% 100%;
+  --card-foreground: 219 48% 8%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 219 48% 8%;
+  --muted: 216 24% 92%;
+  --muted-foreground: 217 13% 40%;
+  --border: 215 22% 84%;
+  --input: 215 22% 84%;
+  --ring: 196 31% 47%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: #05070B;
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  color: hsl(var(--foreground));
+  background:
+    radial-gradient(circle at 22% -10%, rgba(216, 180, 93, 0.12), transparent 28rem),
+    radial-gradient(circle at 90% 4%, rgba(78, 142, 162, 0.16), transparent 30rem),
+    linear-gradient(180deg, #05070B 0%, #0B1220 48%, #070B12 100%);
+  font-family: Inter, "SF Pro Display", system-ui, sans-serif;
+  letter-spacing: 0;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  min-width: 0;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+main {
+  min-width: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+::selection {
+  background: rgba(216, 180, 93, 0.34);
+  color: #F9FAFB;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(216, 180, 93, 0.78);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: 0;
+  }
+
+  h1 {
+    line-height: 1.05;
+  }
+
+  h2,
+  h3 {
+    line-height: 1.15;
+  }
+
+  p {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Register this utility so focus-visible variants keep working in v4. */
+@utility premium-focus {
+  outline: 2px solid rgba(216, 180, 93, 0.72);
+  outline-offset: 3px;
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (min-width: 1480px) { max-width: 1480px; }
+}
+
+@layer utilities {
+  .page-shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 1480px;
+  }
+
+  .content-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .content-grid {
+      gap: 1.5rem;
+    }
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 1rem;
+  }
+
+  .interactive-surface {
+    transition:
+      border-color var(--nexora-motion-normal) var(--nexora-ease),
+      background-color var(--nexora-motion-normal) var(--nexora-ease),
+      box-shadow var(--nexora-motion-normal) var(--nexora-ease),
+      transform var(--nexora-motion-normal) var(--nexora-ease);
+  }
+
+  .interactive-surface:hover {
+    border-color: rgba(216, 180, 93, 0.28);
+    background-color: rgba(255, 255, 255, 0.075);
+    box-shadow: var(--nexora-shadow-focus), var(--nexora-shadow-panel);
+    transform: translateY(-1px);
+  }
+
+  .glass-shell {
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.84), rgba(11, 18, 32, 0.74));
+    border: 1px solid rgba(229, 231, 235, 0.11);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 80px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(22px);
+  }
+
+  .glass-panel {
+    background: rgba(11, 18, 32, 0.72);
+    border: 1px solid rgba(229, 231, 235, 0.10);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(18px);
+  }
+
+  .premium-focus {
+    outline: 2px solid rgba(216, 180, 93, 0.72);
+    outline-offset: 3px;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-luxury {
+    scrollbar-color: rgba(216, 180, 93, 0.34) rgba(255, 255, 255, 0.04);
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-luxury::-webkit-scrollbar {
+    height: 0.75rem;
+    width: 0.75rem;
+  }
+
+  .scrollbar-luxury::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .scrollbar-luxury::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: rgba(216, 180, 93, 0.34);
+    background-clip: content-box;
+  }
+
+  .luxury-border {
+    border-color: rgba(216, 180, 93, 0.26);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-x {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}

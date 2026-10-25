@@ -1,0 +1,5 @@
+﻿import { Injectable } from '@nestjs/common';
+import { ConnectionManager } from '../connection-manager.service';
+import { CredentialVault } from '../credentials/credential-vault.service';
+@Injectable()
+export class OAuthService { constructor(private readonly connections: ConnectionManager, private readonly vault: CredentialVault) {} buildAuthorizationUrl(input: { connectorKey: string; clientId: string; redirectUri: string; scopes: string[]; state: string; authUrl?: string }) { const base = input.authUrl ?? `https://auth.${input.connectorKey}.com/oauth/authorize`; const params = new URLSearchParams({ response_type: 'code', client_id: input.clientId, redirect_uri: input.redirectUri, scope: input.scopes.join(' '), state: input.state }); return `${base}?${params.toString()}`; } rotateTokens(integrationId: string, tokens: Record<string, unknown>) { return this.connections.rotate(integrationId, { ...tokens, rotatedAt: new Date().toISOString() }); } revoke(integrationId: string) { return this.connections.revoke(integrationId); } validate(integrationId: string) { return this.connections.validate(integrationId); } }

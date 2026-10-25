@@ -1,0 +1,49 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2022"
+    ],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": false,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "ignoreDeprecations": "5.0"
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next-e2e-0a117e4564e04d30a84720073a3ada91/types/**/*.ts",
+    ".next-e2e-ae47d7dc0b1042fea0de51980f917a7e/types/**/*.ts",
+    ".next/types/**/*.ts",
+    "next-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "**/*.bak",
+    "**/*.bak.*",
+    "**/*.ux-refinement-*.bak"
+  ]
+}

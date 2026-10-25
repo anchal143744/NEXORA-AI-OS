@@ -1,0 +1,5 @@
+﻿import { Injectable } from '@nestjs/common';
+import { AGENT_CAPABILITIES, FOUNDATION_AGENTS, FoundationAgentKey } from '../contracts/agent.contract';
+const AGENT_ROLES: Record<FoundationAgentKey, string[]> = { crm: ['lead routing','pipeline hygiene','customer context'], sales: ['opportunity follow-up','deal risk','revenue actions'], finance: ['cashflow review','expense monitoring','invoice alerts'], hr: ['employee operations','attendance signals','team planning'], operations: ['workflow health','task coordination','process improvement'], analytics: ['KPI interpretation','trend detection','report generation'], customer_success: ['retention signals','account alerts','success plans'], executive: ['business summary','strategic recommendations','cross-module decisions'] };
+@Injectable()
+export class AgentRegistryService { list() { return FOUNDATION_AGENTS.map(key => ({ key, capabilities: AGENT_CAPABILITIES, responsibilities: AGENT_ROLES[key] })); } get(key: FoundationAgentKey) { return this.list().find(agent => agent.key === key); } }

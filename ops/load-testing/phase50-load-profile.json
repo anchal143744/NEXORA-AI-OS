@@ -1,0 +1,27 @@
+{
+  "phase": 50,
+  "version": "1.0.0-RC1",
+  "scenarios": [
+    {
+      "name": "api-read-heavy",
+      "virtualUsers": 500,
+      "durationMinutes": 15,
+      "targetP95Ms": 500,
+      "targetErrorRate": 1
+    },
+    {
+      "name": "workflow-write-burst",
+      "virtualUsers": 250,
+      "durationMinutes": 10,
+      "targetP95Ms": 800,
+      "targetErrorRate": 1.5
+    },
+    {
+      "name": "web-shell-static-build",
+      "virtualUsers": 1000,
+      "durationMinutes": 5,
+      "targetP95Ms": 300,
+      "targetErrorRate": 0.5
+    }
+  ]
+}

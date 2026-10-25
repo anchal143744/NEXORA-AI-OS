@@ -1,0 +1,26 @@
+const jsonHeaders = { 'Content-Type': 'application/json' };
+
+export const communicationsApi = {
+  channels: () => fetch('/api/v1/communications/channels'),
+  createChannel: (payload: unknown) => fetch('/api/v1/communications/channels', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  channelMembers: (id: string) => fetch(`/api/v1/communications/channels/${id}/members`),
+  conversations: () => fetch('/api/v1/conversations'),
+  createConversation: (payload: unknown) => fetch('/api/v1/conversations', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  messages: (conversationId?: string) => fetch(conversationId ? `/v1/messages?conversationId=${encodeURIComponent(conversationId)}` : '/v1/messages'),
+  sendMessage: (payload: unknown) => fetch('/api/v1/messages', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  announcements: () => fetch('/api/v1/announcements'),
+  createAnnouncement: (payload: unknown) => fetch('/api/v1/announcements', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  meetings: () => fetch('/api/v1/meetings'),
+  createMeeting: (payload: unknown) => fetch('/api/v1/meetings', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  meetingTemplates: () => fetch('/api/v1/meetings/templates'),
+  meetingSummaries: () => fetch('/api/v1/meeting-summaries'),
+  generateMeetingSummary: (meetingId: string, payload: unknown) => fetch(`/api/v1/meeting-summaries/meetings/${meetingId}`, { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  calendars: () => fetch('/api/v1/calendars'),
+  createCalendar: (payload: unknown) => fetch('/api/v1/calendars', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  calendarEvents: () => fetch('/api/v1/calendar-events'),
+  createCalendarEvent: (payload: unknown) => fetch('/api/v1/calendar-events', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  schedulingRecommendations: (payload: unknown) => fetch('/api/v1/scheduling/recommendations', { method: 'POST', headers: jsonHeaders, body: JSON.stringify(payload) }),
+  availability: () => fetch('/api/v1/availability'),
+  reminders: () => fetch('/api/v1/reminders'),
+  notificationPreferences: () => fetch('/api/v1/notifications/preferences'),
+};

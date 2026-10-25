@@ -1,0 +1,464 @@
+{
+  "phase": 56,
+  "version": "1.6.0",
+  "previousVersion": "1.5.0",
+  "generatedAt": "2026-06-20T09:22:09.064Z",
+  "status": "COMPLETE_WITH_TRACKED_SECURITY_REMEDIATION",
+  "architectureSummary": "Phase 56 adds a premium People Workspace on top of the adaptive shell, with typed people data, HR service contracts, Zustand state, React Query actions, grouped People/Hiring/Growth/Organization navigation, drag-and-drop candidate pipeline, workforce analytics and AI HR Copilot.",
+  "modules": [
+    "HR Home",
+    "Employee Directory",
+    "Attendance Management",
+    "Leave Management",
+    "Hiring Workspace",
+    "Candidate Pipeline",
+    "Performance Management",
+    "Goals and Reviews",
+    "Learning and Development",
+    "Organization Chart",
+    "Workforce Analytics",
+    "AI HR Copilot"
+  ],
+  "routes": [
+    "/people",
+    "/people/employees",
+    "/people/attendance",
+    "/people/leave",
+    "/people/hiring",
+    "/people/candidates",
+    "/people/performance",
+    "/people/learning",
+    "/people/organization",
+    "/workspace/hr"
+  ],
+  "createdFiles": [
+    "apps/web/types/people-workspace.ts",
+    "apps/web/lib/people-workspace.ts",
+    "apps/web/services/people-workspace-api.ts",
+    "apps/web/stores/people-workspace-store.ts",
+    "apps/web/hooks/use-people-workspace-actions.ts",
+    "apps/web/features/people/people-navigation.tsx",
+    "apps/web/features/people/hr-home.tsx",
+    "apps/web/features/people/employee-directory.tsx",
+    "apps/web/features/people/attendance-management.tsx",
+    "apps/web/features/people/leave-management.tsx",
+    "apps/web/features/people/hiring-workspace.tsx",
+    "apps/web/features/people/candidate-pipeline.tsx",
+    "apps/web/features/people/performance-management.tsx",
+    "apps/web/features/people/goals-reviews.tsx",
+    "apps/web/features/people/learning-development.tsx",
+    "apps/web/features/people/organization-chart.tsx",
+    "apps/web/features/people/workforce-analytics.tsx",
+    "apps/web/features/people/ai-hr-copilot.tsx",
+    "apps/web/features/people/people-workspace.tsx",
+    "apps/web/app/people/page.tsx",
+    "apps/web/app/people/employees/page.tsx",
+    "apps/web/app/people/attendance/page.tsx",
+    "apps/web/app/people/leave/page.tsx",
+    "apps/web/app/people/hiring/page.tsx",
+    "apps/web/app/people/candidates/page.tsx",
+    "apps/web/app/people/performance/page.tsx",
+    "apps/web/app/people/learning/page.tsx",
+    "apps/web/app/people/organization/page.tsx",
+    "apps/web/app/workspace/hr/page.tsx",
+    "tests/phase56-people-workspace.test.mjs",
+    "docs/phase-56-hr-workspace-report.md",
+    "docs/phase-56-employee-directory-report.md",
+    "docs/phase-56-attendance-report.md",
+    "docs/phase-56-leave-management-report.md",
+    "docs/phase-56-hiring-report.md",
+    "docs/phase-56-performance-report.md",
+    "docs/phase-56-workforce-analytics-report.md",
+    "docs/phase-56-ai-hr-copilot-report.md",
+    "docs/phase-56-ux-report.md",
+    "docs/phase-56-accessibility-report.md"
+  ],
+  "touchedFiles": [
+    "package.json",
+    "apps/web/package.json",
+    "apps/web/features/workspace/workspace-config.ts"
+  ],
+  "createdFileCount": 40,
+  "touchedFileCount": 3,
+  "requiredFilesCount": 53,
+  "missingFilesCount": 0,
+  "missingFiles": [],
+  "validationResults": [
+    {
+      "name": "npm install",
+      "status": "PASSED",
+      "evidence": "Dependency sync completed after the Phase 56 version bump."
+    },
+    {
+      "name": "Web TypeScript compile",
+      "status": "PASSED",
+      "evidence": "npm run web:typecheck completed successfully."
+    },
+    {
+      "name": "Phase 56 People workspace tests",
+      "status": "PASSED",
+      "evidence": "node --test tests/phase56-people-workspace.test.mjs passed 5 assertions."
+    },
+    {
+      "name": "Next build",
+      "status": "PASSED",
+      "evidence": "npm run web:build completed successfully with 29 static routes, including all People routes and /workspace/hr."
+    },
+    {
+      "name": "HTTP route smoke",
+      "status": "PASSED",
+      "evidence": "Fresh Next dev server on port 3004 returned 200 for all Phase 56 People routes with People, HR, Hiring and AI HR markers where applicable."
+    },
+    {
+      "name": "npm audit",
+      "status": "TRACKED_SECURITY_REMEDIATION_REQUIRED",
+      "evidence": "Audit remains at 12 advisories, 3 moderate and 9 high, 0 critical. npm reports remaining fixes require semver-major Nest/Next changes."
+    },
+    {
+      "name": "Browser visual smoke",
+      "status": "BLOCKED_BY_ENVIRONMENT",
+      "evidence": "The in-app browser could not start because the Windows sandbox returned: spawn setup refresh. HTTP smoke and production build evidence are retained."
+    }
+  ],
+  "validationStatus": "PASSED_WITH_TRACKED_SECURITY_REMEDIATION",
+  "audit": {
+    "total": 12,
+    "moderate": 3,
+    "high": 9,
+    "critical": 0,
+    "status": "TRACKED_SECURITY_REMEDIATION_REQUIRED",
+    "notes": [
+      "Audit state is unchanged from Phase 55 after non-breaking remediation.",
+      "Remaining fixes require semver-major Nest/Next dependency changes according to npm audit."
+    ]
+  },
+  "physicalVerification": [
+    {
+      "relativePath": "apps/web/types/people-workspace.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\types\\people-workspace.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/lib/people-workspace.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\lib\\people-workspace.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/services/people-workspace-api.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\services\\people-workspace-api.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/stores/people-workspace-store.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\stores\\people-workspace-store.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/hooks/use-people-workspace-actions.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\hooks\\use-people-workspace-actions.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/people-navigation.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\people-navigation.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/hr-home.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\hr-home.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/employee-directory.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\employee-directory.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/attendance-management.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\attendance-management.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/leave-management.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\leave-management.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/hiring-workspace.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\hiring-workspace.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/candidate-pipeline.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\candidate-pipeline.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/performance-management.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\performance-management.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/goals-reviews.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\goals-reviews.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/learning-development.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\learning-development.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/organization-chart.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\organization-chart.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/workforce-analytics.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\workforce-analytics.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/ai-hr-copilot.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\ai-hr-copilot.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/people/people-workspace.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\people\\people-workspace.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/employees/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\employees\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/attendance/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\attendance\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/leave/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\leave\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/hiring/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\hiring\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/candidates/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\candidates\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/performance/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\performance\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/learning/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\learning\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/people/organization/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\people\\organization\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/workspace/hr/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\workspace\\hr\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "tests/phase56-people-workspace.test.mjs",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\tests\\phase56-people-workspace.test.mjs",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-hr-workspace-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-hr-workspace-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-employee-directory-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-employee-directory-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-attendance-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-attendance-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-leave-management-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-leave-management-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-hiring-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-hiring-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-performance-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-performance-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-workforce-analytics-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-workforce-analytics-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-ai-hr-copilot-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-ai-hr-copilot-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-ux-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-ux-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-accessibility-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-accessibility-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "package.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\package.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/package.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\package.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/workspace/workspace-config.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\workspace\\workspace-config.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "package-lock.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\package-lock.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/.next",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\.next",
+      "exists": true,
+      "type": "directory"
+    },
+    {
+      "relativePath": "docs/phase-56-implementation.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-implementation.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-validation-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-validation-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-physical-verification-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-physical-verification-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-56-verification.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-56-verification.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "README.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\README.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/roadmap.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\roadmap.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/changelog.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\changelog.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/current-status.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\current-status.md",
+      "exists": true,
+      "type": "file"
+    }
+  ],
+  "platformStatistics": {
+    "databaseModels": 818,
+    "controllerEndpoints": 2002,
+    "services": 321,
+    "events": 504,
+    "phase56FrontendModules": 12,
+    "phase56Routes": 10
+  },
+  "nextPhase": "Phase 57 - Finance Workspace, Billing, Revenue, Budgeting and Financial Intelligence"
+}

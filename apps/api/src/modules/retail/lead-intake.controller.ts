@@ -1,0 +1,3 @@
+import {Body,Controller,Headers,Param,ParseUUIDPipe,Post} from '@nestjs/common';import {Throttle} from '@nestjs/throttler';import {ShopLeadsService} from './shop-leads.service';import {WebsiteLeadDto} from './shop-leads.dto';
+@Controller({path:'retail/lead-intake',version:'1'})
+export class LeadIntakeController {constructor(private readonly leads:ShopLeadsService){}@Post(':workspaceId') @Throttle({default:{limit:20,ttl:60000}}) capture(@Param('workspaceId',ParseUUIDPipe) workspaceId:string,@Headers('x-nexora-lead-key') token:string,@Body() dto:WebsiteLeadDto){return this.leads.website(workspaceId,token,dto);}}

@@ -1,0 +1,24 @@
+{
+  "phase": 43,
+  "version": "0.43.0",
+  "generatedAt": "2026-06-14T12:48:47.888Z",
+  "modelCount": 493,
+  "endpointCount": 1272,
+  "phaseModelsAdded": 24,
+  "phaseEndpointsAdded": 52,
+  "createdFilesCount": 33,
+  "touchedFilesCount": 12,
+  "missingFilesCount": 0,
+  "missingFiles": [],
+  "validation": {
+    "npm install": "PASSED - dependencies already up to date; audit remains 5 vulnerabilities (2 moderate, 3 high).",
+    "Prisma validate": "PASSED - prisma/schema.prisma is valid.",
+    "Prisma generate": "PASSED - Prisma Client v6.19.0 generated.",
+    "API TypeScript compile": "PASSED - npm run api:typecheck.",
+    "Web TypeScript compile": "PASSED - npm run web:typecheck.",
+    "Nest build": "PASSED - npm run api:build.",
+    "Next build": "PASSED - npm run web:build.",
+    "Unit tests": "PASSED - Phase 43 manufacturing calculation and DTO tests.",
+    "Integration tests": "PASSED - Phase 43 schema, module and API map tests."
+  }
+}

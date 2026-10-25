@@ -1,0 +1,56 @@
+import {
+  acquisitionSignals,
+  adoptionIntelligenceSignals,
+  customerSuccessLaunchItems,
+  executiveWarRoomSignals,
+  globalReadinessChecks,
+  launchAnalyticsSignals,
+  launchChecklist,
+  launchCopilotCommands,
+  launchMetrics,
+  launchMilestones,
+  launchRisks,
+  marketingMessages,
+  pricingPlans,
+  publicWebsitePages,
+  salesEnablementAssets,
+  trialExperience,
+} from '@/lib/public-launch';
+
+export async function getPublicLaunchSnapshot() {
+  return {
+    metrics: launchMetrics,
+    checklist: launchChecklist,
+    milestones: launchMilestones,
+    risks: launchRisks,
+    pricing: pricingPlans,
+    trialExperience,
+    marketing: marketingMessages,
+    acquisition: acquisitionSignals,
+    salesEnablement: salesEnablementAssets,
+    website: publicWebsitePages,
+    customerSuccess: customerSuccessLaunchItems,
+    globalReadiness: globalReadinessChecks,
+    adoption: adoptionIntelligenceSignals,
+    analytics: launchAnalyticsSignals,
+    warRoom: executiveWarRoomSignals,
+    copilot: launchCopilotCommands,
+    generatedAt: new Date().toISOString(),
+  };
+}
+
+export const publicLaunchEndpoints = {
+  launch: '/v1/public-launch',
+  pricing: '/v1/public-launch/pricing',
+  trial: '/v1/public-launch/trial',
+  marketing: '/v1/public-launch/marketing',
+  acquisition: '/v1/public-launch/acquisition',
+  salesEnablement: '/v1/public-launch/sales-enablement',
+  website: '/v1/public-launch/website',
+  customerSuccess: '/v1/public-launch/customer-success',
+  globalReadiness: '/v1/public-launch/global-readiness',
+  adoption: '/v1/public-launch/adoption',
+  analytics: '/v1/public-launch/analytics',
+  warRoom: '/v1/public-launch/war-room',
+  copilot: '/v1/public-launch/copilot',
+};

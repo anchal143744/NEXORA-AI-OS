@@ -1,0 +1,404 @@
+{
+  "phase": 55,
+  "version": "1.5.0",
+  "previousVersion": "1.4.0",
+  "generatedAt": "2026-06-20T09:00:49.219Z",
+  "status": "COMPLETE_WITH_TRACKED_SECURITY_REMEDIATION",
+  "architectureSummary": "Phase 55 adds a premium enterprise CRM workspace and revenue operations experience on top of the adaptive shell, with typed CRM workspace data, API service contracts, Zustand state, React Query actions, visual pipeline movement, revenue forecasting and AI Sales Copilot commands.",
+  "modules": [
+    "CRM Home",
+    "Lead Management",
+    "Contact Management",
+    "Account Management",
+    "Opportunity Management",
+    "Visual Sales Pipeline",
+    "Activity Center",
+    "Customer Timeline",
+    "Quote and Proposal Workspace",
+    "Revenue Forecasting",
+    "Revenue Operations Dashboard",
+    "AI Sales Copilot"
+  ],
+  "routes": [
+    "/crm",
+    "/crm/leads",
+    "/crm/opportunities",
+    "/crm/revenue-operations",
+    "/workspace/crm"
+  ],
+  "createdFiles": [
+    "apps/web/types/crm-workspace.ts",
+    "apps/web/lib/crm-workspace.ts",
+    "apps/web/services/crm-workspace-api.ts",
+    "apps/web/stores/crm-workspace-store.ts",
+    "apps/web/hooks/use-crm-workspace-actions.ts",
+    "apps/web/features/crm/crm-home.tsx",
+    "apps/web/features/crm/lead-management.tsx",
+    "apps/web/features/crm/contact-management.tsx",
+    "apps/web/features/crm/account-management.tsx",
+    "apps/web/features/crm/opportunity-management.tsx",
+    "apps/web/features/crm/visual-sales-pipeline.tsx",
+    "apps/web/features/crm/activity-center.tsx",
+    "apps/web/features/crm/customer-timeline.tsx",
+    "apps/web/features/crm/quote-proposal-workspace.tsx",
+    "apps/web/features/crm/revenue-forecasting.tsx",
+    "apps/web/features/crm/revenue-operations-dashboard.tsx",
+    "apps/web/features/crm/ai-sales-copilot.tsx",
+    "apps/web/features/crm/crm-workspace.tsx",
+    "apps/web/app/crm/page.tsx",
+    "apps/web/app/crm/leads/page.tsx",
+    "apps/web/app/crm/opportunities/page.tsx",
+    "apps/web/app/crm/revenue-operations/page.tsx",
+    "apps/web/app/workspace/crm/page.tsx",
+    "tests/phase55-crm-workspace.test.mjs",
+    "docs/phase-55-crm-workspace-report.md",
+    "docs/phase-55-lead-management-report.md",
+    "docs/phase-55-opportunity-management-report.md",
+    "docs/phase-55-revenue-operations-report.md",
+    "docs/phase-55-ai-sales-copilot-report.md",
+    "docs/phase-55-ux-report.md",
+    "docs/phase-55-accessibility-report.md"
+  ],
+  "touchedFiles": [
+    "package.json",
+    "apps/web/package.json",
+    "apps/web/features/workspace/workspace-config.ts"
+  ],
+  "createdFileCount": 31,
+  "touchedFileCount": 3,
+  "requiredFilesCount": 44,
+  "missingFilesCount": 0,
+  "missingFiles": [],
+  "validationResults": [
+    {
+      "name": "npm install",
+      "status": "PASSED",
+      "evidence": "Dependency sync completed after the Phase 55 version bump."
+    },
+    {
+      "name": "npm audit fix",
+      "status": "PARTIAL_REMEDIATION",
+      "evidence": "Non-breaking remediation changed 8 packages and reduced advisories from 15 to 12. Remaining fixes require semver-major Nest/Next changes according to npm."
+    },
+    {
+      "name": "Web TypeScript compile",
+      "status": "PASSED",
+      "evidence": "npm run web:typecheck completed successfully after CRM client boundary remediation."
+    },
+    {
+      "name": "Phase 55 CRM workspace tests",
+      "status": "PASSED",
+      "evidence": "node --test tests/phase55-crm-workspace.test.mjs passed 4 assertions."
+    },
+    {
+      "name": "Next build",
+      "status": "PASSED",
+      "evidence": "npm run web:build completed successfully with 19 static routes, including /crm, /crm/leads, /crm/opportunities, /crm/revenue-operations and /workspace/crm."
+    },
+    {
+      "name": "HTTP route smoke",
+      "status": "PASSED",
+      "evidence": "Fresh Next dev server on port 3003 returned 200 for all Phase 55 CRM routes with CRM, revenue and pipeline markers."
+    },
+    {
+      "name": "Browser visual smoke",
+      "status": "BLOCKED_BY_ENVIRONMENT",
+      "evidence": "The in-app browser could not start because the Windows sandbox returned: spawn setup refresh. HTTP smoke and production build evidence are retained."
+    }
+  ],
+  "validationStatus": "PASSED_WITH_TRACKED_SECURITY_REMEDIATION",
+  "audit": {
+    "beforeFix": {
+      "total": 15,
+      "moderate": 3,
+      "high": 12,
+      "critical": 0
+    },
+    "afterFix": {
+      "total": 12,
+      "moderate": 3,
+      "high": 9,
+      "critical": 0
+    },
+    "status": "TRACKED_SECURITY_REMEDIATION_REQUIRED",
+    "notes": [
+      "Remaining advisories are in the backend Nest/WebSocket chain plus Next/PostCSS.",
+      "npm reports remaining fixes require semver-major package changes or downgrades, so they were not forced during this frontend phase."
+    ]
+  },
+  "physicalVerification": [
+    {
+      "relativePath": "apps/web/types/crm-workspace.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\types\\crm-workspace.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/lib/crm-workspace.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\lib\\crm-workspace.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/services/crm-workspace-api.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\services\\crm-workspace-api.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/stores/crm-workspace-store.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\stores\\crm-workspace-store.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/hooks/use-crm-workspace-actions.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\hooks\\use-crm-workspace-actions.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/crm-home.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\crm-home.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/lead-management.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\lead-management.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/contact-management.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\contact-management.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/account-management.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\account-management.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/opportunity-management.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\opportunity-management.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/visual-sales-pipeline.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\visual-sales-pipeline.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/activity-center.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\activity-center.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/customer-timeline.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\customer-timeline.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/quote-proposal-workspace.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\quote-proposal-workspace.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/revenue-forecasting.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\revenue-forecasting.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/revenue-operations-dashboard.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\revenue-operations-dashboard.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/ai-sales-copilot.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\ai-sales-copilot.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/crm/crm-workspace.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\crm\\crm-workspace.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/crm/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\crm\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/crm/leads/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\crm\\leads\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/crm/opportunities/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\crm\\opportunities\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/crm/revenue-operations/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\crm\\revenue-operations\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/app/workspace/crm/page.tsx",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\app\\workspace\\crm\\page.tsx",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "tests/phase55-crm-workspace.test.mjs",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\tests\\phase55-crm-workspace.test.mjs",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-crm-workspace-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-crm-workspace-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-lead-management-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-lead-management-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-opportunity-management-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-opportunity-management-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-revenue-operations-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-revenue-operations-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-ai-sales-copilot-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-ai-sales-copilot-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-ux-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-ux-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-accessibility-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-accessibility-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "package.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\package.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/package.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\package.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/features/workspace/workspace-config.ts",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\features\\workspace\\workspace-config.ts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "package-lock.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\package-lock.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "apps/web/.next",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\apps\\web\\.next",
+      "exists": true,
+      "type": "directory"
+    },
+    {
+      "relativePath": "docs/phase-55-implementation.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-implementation.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-validation-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-validation-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-physical-verification-report.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-physical-verification-report.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/phase-55-verification.json",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\phase-55-verification.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "README.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\README.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/roadmap.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\roadmap.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/changelog.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\changelog.md",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "relativePath": "docs/current-status.md",
+      "absolutePath": "C:\\Users\\Acer\\OneDrive\\Desktop\\NEXORA_AI\\docs\\current-status.md",
+      "exists": true,
+      "type": "file"
+    }
+  ],
+  "platformStatistics": {
+    "databaseModels": 818,
+    "controllerEndpoints": 2002,
+    "services": 321,
+    "events": 504,
+    "phase55FrontendModules": 12,
+    "phase55Routes": 5
+  },
+  "nextPhase": "Phase 56 - People Workspace: HR, Hiring, Attendance, Leave, Performance, Learning and AI HR Copilot"
+}
