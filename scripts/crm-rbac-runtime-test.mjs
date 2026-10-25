@@ -2,6 +2,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { randomUUID } from 'node:crypto';
 import { json, urlencoded } from 'express';
+import { assertDisposableRuntimeDatabase, createRuntimeFixtureProvisioner } from './test-fixtures/runtime-membership.mjs';
 
 const runId = process.env.CRM_RBAC_RUN_ID || Date.now().toString(36);
 const password = process.env.CRM_RBAC_PASSWORD || 'NexoraRBAC!2026';
@@ -9,6 +10,7 @@ const failures = [];
 const matrix = [];
 let TokenServiceClass;
 let SessionsServiceClass;
+let runtimeFixtures;
 
 const permissionProfiles = {
   ADMIN: ['create', 'read', 'update', 'delete', 'manage', 'approve', 'execute'],
@@ -22,12 +24,15 @@ function fail(message) {
 }
 
 async function createApp() {
-  const [{ AppModule }, { GlobalExceptionFilter }, { ApiResponseInterceptor }, tokenModule, sessionsModule] = await Promise.all([
+  assertDisposableRuntimeDatabase();
+  const [{ AppModule }, { GlobalExceptionFilter }, { ApiResponseInterceptor }, tokenModule, sessionsModule, prismaModule, passwordModule] = await Promise.all([
     import('../apps/api/dist/app.module.js'),
     import('../apps/api/dist/common/filters/global-exception.filter.js'),
     import('../apps/api/dist/common/interceptors/api-response.interceptor.js'),
     import('../apps/api/dist/modules/auth/tokens/token.service.js'),
     import('../apps/api/dist/modules/sessions/sessions.service.js'),
+    import('../apps/api/dist/infrastructure/database/prisma.service.js'),
+    import('../apps/api/dist/modules/security/services/password.service.js'),
   ]);
   TokenServiceClass = tokenModule.TokenService;
   SessionsServiceClass = sessionsModule.SessionsService;
@@ -40,6 +45,13 @@ async function createApp() {
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new ApiResponseInterceptor());
   await app.listen(0, '127.0.0.1');
+  const passwordService = app.get(passwordModule.PasswordService, { strict: false });
+  runtimeFixtures = createRuntimeFixtureProvisioner({
+    prisma: app.get(prismaModule.PrismaService, { strict: false }),
+    hashPassword: value => passwordService.hash(value),
+    runId,
+  });
+  await runtimeFixtures.verifyDatabase();
   const address = app.getHttpServer().address();
   const port = typeof address === 'object' && address ? address.port : 0;
   return { app, baseUrl: `http://127.0.0.1:${port}` };
@@ -80,6 +92,18 @@ function unwrap(body) {
 }
 
 async function signupUser(baseUrl, input) {
+  if (input.tenantId || input.workspaceId) {
+    const fixtureUser = await runtimeFixtures.provisionMember({ ...input, password });
+    const login = await request(baseUrl, '/api/v1/auth/login', {
+      method: 'POST',
+      body: { email: input.email, password, tenantId: input.tenantId },
+    });
+    if (![200, 201].includes(login.status)) throw new Error(`Fixture login failed: ${login.status} ${JSON.stringify(login.body)}`);
+    const data = unwrap(login.body);
+    const principal = { user: data.user, session: data.session };
+    runtimeFixtures.assertMemberLogin(principal, input, fixtureUser);
+    return principal;
+  }
   const signup = await request(baseUrl, '/api/v1/auth/signup', {
     method: 'POST',
     body: {
@@ -87,8 +111,6 @@ async function signupUser(baseUrl, input) {
       password,
       displayName: input.displayName,
       companyName: input.companyName,
-      tenantId: input.tenantId,
-      workspaceId: input.workspaceId,
       role: input.role,
     },
   });
@@ -96,7 +118,9 @@ async function signupUser(baseUrl, input) {
     throw new Error(`Signup failed for ${input.email}: ${signup.status} ${JSON.stringify(signup.body)}`);
   }
   const data = unwrap(signup.body);
-  return { user: data.user, session: data.session };
+  const principal = { user: data.user, session: data.session };
+  await runtimeFixtures.registerOwner(principal);
+  return principal;
 }
 
 async function issueRoleToken(app, principal, role, workspaceId = principal.session.workspaceId) {
@@ -271,6 +295,14 @@ async function main() {
     await expectOperation(baseUrl, 'NO_REQUIRED_PERMISSION', 'Read workspace denied', 403, '/api/v1/crm/workspace', authOptions(noPermissionAuth));
     await expectOperation(baseUrl, 'NO_REQUIRED_PERMISSION', 'Create lead denied', 403, '/api/v1/crm/leads', authOptions(noPermissionAuth, { method: 'POST', body: leadPayload('NoPermission') }));
     await expectOperation(baseUrl, 'UNAUTHENTICATED', 'Read workspace denied', 401, '/api/v1/crm/workspace');
+    await expectOperation(baseUrl, 'PUBLIC', 'Join existing tenant without invitation denied', 401, '/api/v1/auth/signup', {
+      method: 'POST',
+      body: { email: `crm-rbac-direct-tenant-${runId}@example.com`, password, displayName: 'CRM RBAC Direct Tenant Join', tenantId: admin.session.tenantId },
+    });
+    await expectOperation(baseUrl, 'PUBLIC', 'Join existing workspace without invitation denied', 401, '/api/v1/auth/signup', {
+      method: 'POST',
+      body: { email: `crm-rbac-direct-workspace-${runId}@example.com`, password, displayName: 'CRM RBAC Direct Workspace Join', workspaceId: admin.session.workspaceId },
+    });
 
     const workspaceB = await createWorkspace(baseUrl, adminAuth, admin.session.organizationId);
     const workspaceBUser = await signupUser(baseUrl, {
@@ -283,7 +315,7 @@ async function main() {
     const workspaceBAuth = await issueRoleToken(app, workspaceBUser, 'ADMIN', workspaceB.id);
     const workspaceBSeed = await createCrmSeed(baseUrl, workspaceBAuth, 'WorkspaceB');
     await expectOperation(baseUrl, 'ADMIN', 'Cannot update another workspace lead', 404, `/api/v1/crm/leads/${workspaceBSeed.lead.id}`, authOptions(adminAuth, { method: 'PATCH', body: { status: 'qualified' } }));
-    await expectOperation(baseUrl, 'ADMIN', 'Cannot access another workspace via spoofed header', 404, `/api/v1/crm/leads/${workspaceBSeed.lead.id}`, {
+    await expectOperation(baseUrl, 'ADMIN', 'Cannot access another workspace via spoofed header', 403, `/api/v1/crm/leads/${workspaceBSeed.lead.id}`, {
       method: 'PATCH',
       token: adminAuth.token,
       tenantId: adminAuth.tenantId,

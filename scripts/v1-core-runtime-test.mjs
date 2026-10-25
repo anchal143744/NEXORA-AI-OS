@@ -2,6 +2,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { randomUUID } from 'node:crypto';
 import { json, urlencoded } from 'express';
+import { assertDisposableRuntimeDatabase, createRuntimeFixtureProvisioner } from './test-fixtures/runtime-membership.mjs';
 
 const runId = process.env.V1_CORE_RUN_ID || Date.now().toString(36);
 const password = process.env.V1_CORE_PASSWORD || 'NexoraV1Runtime!2026';
@@ -13,6 +14,7 @@ const observations = [];
 let TokenServiceClass;
 let PrismaServiceClass;
 let SessionsServiceClass;
+let runtimeFixtures;
 
 const permissionProfiles = {
   ADMIN: ['create', 'read', 'update', 'delete', 'manage', 'approve', 'execute'],
@@ -31,13 +33,15 @@ function recordPersistence(module, entity, expected, actual, passed, detail = ''
 }
 
 async function createApp() {
-  const [{ AppModule }, { GlobalExceptionFilter }, { ApiResponseInterceptor }, tokenModule, prismaModule, sessionsModule] = await Promise.all([
+  assertDisposableRuntimeDatabase();
+  const [{ AppModule }, { GlobalExceptionFilter }, { ApiResponseInterceptor }, tokenModule, prismaModule, sessionsModule, passwordModule] = await Promise.all([
     import('../apps/api/dist/app.module.js'),
     import('../apps/api/dist/common/filters/global-exception.filter.js'),
     import('../apps/api/dist/common/interceptors/api-response.interceptor.js'),
     import('../apps/api/dist/modules/auth/tokens/token.service.js'),
     import('../apps/api/dist/infrastructure/database/prisma.service.js'),
     import('../apps/api/dist/modules/sessions/sessions.service.js'),
+    import('../apps/api/dist/modules/security/services/password.service.js'),
   ]);
   TokenServiceClass = tokenModule.TokenService;
   PrismaServiceClass = prismaModule.PrismaService;
@@ -51,6 +55,13 @@ async function createApp() {
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new ApiResponseInterceptor());
   await app.listen(0, '127.0.0.1');
+  const passwordService = app.get(passwordModule.PasswordService, { strict: false });
+  runtimeFixtures = createRuntimeFixtureProvisioner({
+    prisma: app.get(PrismaServiceClass, { strict: false }),
+    hashPassword: value => passwordService.hash(value),
+    runId,
+  });
+  await runtimeFixtures.verifyDatabase();
   const address = app.getHttpServer().address();
   const port = typeof address === 'object' && address ? address.port : 0;
   return { app, baseUrl: `http://127.0.0.1:${port}` };
@@ -131,6 +142,12 @@ function authOptions(auth, options = {}) {
 }
 
 async function signupUser(baseUrl, input) {
+  if (input.tenantId || input.workspaceId) {
+    const fixtureUser = await runtimeFixtures.provisionMember({ ...input, password });
+    const principal = await loginUser(baseUrl, input.email, input.tenantId);
+    runtimeFixtures.assertMemberLogin(principal, input, fixtureUser);
+    return principal;
+  }
   const response = await request(baseUrl, '/api/v1/auth/signup', {
     method: 'POST',
     body: {
@@ -138,8 +155,6 @@ async function signupUser(baseUrl, input) {
       password,
       displayName: input.displayName,
       companyName: input.companyName,
-      tenantId: input.tenantId,
-      workspaceId: input.workspaceId,
       role: input.role,
     },
   });
@@ -147,7 +162,9 @@ async function signupUser(baseUrl, input) {
     throw new Error(`Signup failed for ${input.email}: ${response.status} ${JSON.stringify(response.body)}`);
   }
   const data = unwrap(response.body);
-  return { user: data.user, session: data.session, verificationRequired: data.verificationRequired };
+  const principal = { user: data.user, session: data.session, verificationRequired: data.verificationRequired };
+  await runtimeFixtures.registerOwner(principal);
+  return principal;
 }
 
 async function loginUser(baseUrl, email, tenantId) {
@@ -233,6 +250,39 @@ async function ensureCurrency(prisma, code = 'USD') {
       metadata: { source: 'v1-runtime-test-fixture' },
     },
   });
+}
+
+async function prepareFinanceFixtures(baseUrl, principals, ownerAuth) {
+  const workspace = unwrap((await expectStatus(baseUrl, 'Finance fixture', 'OWNER', 'Read this run workspace', 200, '/api/v1/workspaces/current', authOptions(ownerAuth))).body);
+  if (workspace?.id !== ownerAuth.workspaceId || workspace.tenantId !== ownerAuth.tenantId || workspace.organizationId !== ownerAuth.organizationId) throw new Error('Finance fixture workspace must belong to this run');
+  await expectStatus(baseUrl, 'Finance fixture', 'OWNER', 'Configure synthetic workspace currency', 200, '/api/v1/retail/shop/settings', authOptions(ownerAuth, {
+    method: 'PATCH', body: { name: workspace.name, currency: 'USD' },
+  }));
+  const users = unwrap((await expectStatus(baseUrl, 'Finance fixture', 'OWNER', 'Read synthetic workspace membership IDs', 200, '/api/v1/admin-center/users', authOptions(ownerAuth))).body);
+  // Finance checks persisted grants, independently of the legacy signed-token
+  // profiles used by the other controller matrices. Grant only exercised actions.
+  for (const [label, principal, actions] of [
+    ['manager', principals.managerA, ['create', 'approve']],
+    ['member', principals.memberA, ['update']],
+  ]) {
+    const user = Array.isArray(users) ? users.find(row => row.id === principal.user.id && row.email === principal.user.email) : undefined;
+    const membership = user?.workspaceMembers?.find(row => row.tenantId === ownerAuth.tenantId && row.workspaceId === ownerAuth.workspaceId && row.userId === principal.user.id && row.status === 'ACTIVE' && row.deletedAt === null);
+    if (!membership) throw new Error('Finance fixture requires a persisted member in this run workspace');
+    const role = unwrap((await expectStatus(baseUrl, 'Finance fixture', 'OWNER', `Create synthetic ${label} finance role`, 201, '/api/v1/rbac/roles', authOptions(ownerAuth, {
+      method: 'POST', body: { name: `V1 finance ${label} ${runId}`, slug: `v1-finance-${label}-${runId}` },
+    }))).body);
+    for (const action of actions) {
+      const permission = unwrap((await expectStatus(baseUrl, 'Finance fixture', 'OWNER', `Create finance ${action} permission`, 201, '/api/v1/rbac/permissions', authOptions(ownerAuth, {
+        method: 'POST', body: { resource: 'finance', action, scope: 'workspace' },
+      }))).body);
+      await expectStatus(baseUrl, 'Finance fixture', 'OWNER', `Attach ${action} to ${label} role`, 201, '/api/v1/rbac/permissions/assign', authOptions(ownerAuth, {
+        method: 'POST', body: { roleId: role.id, permissionId: permission.id },
+      }));
+    }
+    await expectStatus(baseUrl, 'Finance fixture', 'OWNER', `Assign synthetic ${label} finance role`, 201, '/api/v1/rbac/roles/assign', authOptions(ownerAuth, {
+      method: 'POST', body: { roleId: role.id, workspaceMemberId: membership.id },
+    }));
+  }
 }
 
 async function createSecondaryWorkspace(baseUrl, auth, label) {
@@ -344,13 +394,14 @@ async function verifyFinance(baseUrl, prisma, auths, fixtures) {
   recordPersistence('Finance', 'Invoice create', invoice.id, invoiceDb?.id, invoiceDb?.id === invoice.id, 'invoice exists in scoped database query');
   await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Read invoice status', 200, `/api/v1/finance/invoices/${invoice.id}/status`, authOptions(adminA));
   await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Update invoice', 200, `/api/v1/finance/invoices/${invoice.id}`, authOptions(adminA, { method: 'PATCH', body: { status: 'sent', total: 1500 } }));
-  await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Mark invoice paid', 201, `/api/v1/finance/invoices/${invoice.id}/mark-paid`, authOptions(adminA, { method: 'POST' }));
+  await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Mark invoice paid', 201, `/api/v1/finance/invoices/${invoice.id}/mark-paid`, authOptions(adminA, { method: 'POST', body: { idempotencyKey: `v1-mark-paid-${runId}` } }));
   const invoiceStatus = unwrap((await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Read invoice after refresh-style request', 200, `/api/v1/finance/invoices/${invoice.id}/status`, authOptions(adminA))).body);
   recordPersistence('Finance', 'Invoice refresh read', invoice.id, invoiceStatus?.id, invoiceStatus?.id === invoice.id, 'invoice can be read after repeated request');
 
   const expense = unwrap((await expectStatus(baseUrl, 'Finance', 'MANAGER', 'Create expense', 201, '/api/v1/finance/expenses', authOptions(managerA, { method: 'POST', body: expensePayload('A') }))).body);
-  const expenseDb = await prisma.financeExpense.findFirst({ where: { id: expense.id, tenantId: adminA.tenantId, workspaceId: adminA.workspaceId, deletedAt: null } });
-  recordPersistence('Finance', 'Expense create', expense.id, expenseDb?.id, expenseDb?.id === expense.id, 'expense exists in scoped database query');
+  const validExpenseId = typeof expense?.id === 'string' && expense.id.length > 0;
+  const expenseDb = validExpenseId ? await prisma.financeExpense.findFirst({ where: { id: expense.id, tenantId: adminA.tenantId, workspaceId: adminA.workspaceId, deletedAt: null } }) : null;
+  recordPersistence('Finance', 'Expense create', expense?.id ?? 'valid created expense ID', expenseDb?.id, validExpenseId && expenseDb?.id === expense.id, 'expense has a nonempty ID and exists in scoped database query');
   await expectStatus(baseUrl, 'Finance', 'MEMBER', 'Update expense', 200, `/api/v1/finance/expenses/${expense.id}`, authOptions(memberA, { method: 'PATCH', body: { description: 'Updated by member runtime test' } }));
   await expectStatus(baseUrl, 'Finance', 'MEMBER', 'Approve expense denied', 403, `/api/v1/finance/expenses/${expense.id}/approve`, authOptions(memberA, { method: 'POST' }));
   await expectStatus(baseUrl, 'Finance', 'MANAGER', 'Approve expense', 201, `/api/v1/finance/expenses/${expense.id}/approve`, authOptions(managerA, { method: 'POST' }));
@@ -361,8 +412,9 @@ async function verifyFinance(baseUrl, prisma, auths, fixtures) {
   const a2Expense = unwrap((await expectStatus(baseUrl, 'Finance', 'ADMIN_A2', 'Create workspace A2 expense', 201, '/api/v1/finance/expenses', authOptions(adminA2, { method: 'POST', body: expensePayload('A2') }))).body);
   const bExpense = unwrap((await expectStatus(baseUrl, 'Finance', 'ADMIN_B', 'Create organization B expense', 201, '/api/v1/finance/expenses', authOptions(adminB, { method: 'POST', body: expensePayload('B') }))).body);
   await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Cannot update workspace A2 expense', 404, `/api/v1/finance/expenses/${a2Expense.id}`, authOptions(adminA, { method: 'PATCH', body: { description: 'blocked' } }));
-  await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Cannot update workspace A2 expense with spoofed header', 404, `/api/v1/finance/expenses/${a2Expense.id}`, authOptions(adminA, { method: 'PATCH', body: { description: 'blocked' }, headers: { 'x-workspace-id': adminA2.workspaceId } }));
-  await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Cannot update organization B expense', 404, `/api/v1/finance/expenses/${bExpense.id}`, authOptions(adminA, { method: 'PATCH', body: { description: 'blocked' }, headers: { 'x-tenant-id': adminB.tenantId, 'x-workspace-id': adminB.workspaceId } }));
+  await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Cannot update workspace A2 expense with spoofed header', 403, `/api/v1/finance/expenses/${a2Expense.id}`, authOptions(adminA, { method: 'PATCH', body: { description: 'blocked' }, headers: { 'x-workspace-id': adminA2.workspaceId } }));
+  await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Cannot update organization B expense', 404, `/api/v1/finance/expenses/${bExpense.id}`, authOptions(adminA, { method: 'PATCH', body: { description: 'blocked' } }));
+  await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Cannot update organization B expense with spoofed headers', 403, `/api/v1/finance/expenses/${bExpense.id}`, authOptions(adminA, { method: 'PATCH', body: { description: 'blocked' }, headers: { 'x-tenant-id': adminB.tenantId, 'x-workspace-id': adminB.workspaceId } }));
 
   const bInvoice = unwrap((await expectStatus(baseUrl, 'Finance', 'ADMIN_B', 'Create organization B invoice', 201, '/api/v1/finance/invoices', authOptions(adminB, { method: 'POST', body: invoicePayload(billingB.id, 'B') }))).body);
   await expectStatus(baseUrl, 'Finance', 'ADMIN', 'Cannot update organization B invoice', 404, `/api/v1/finance/invoices/${bInvoice.id}`, authOptions(adminA, { method: 'PATCH', body: { status: 'paid' } }));
@@ -395,9 +447,12 @@ async function verifyHr(baseUrl, prisma, auths) {
 
   const a2Department = unwrap((await expectStatus(baseUrl, 'HR', 'ADMIN_A2', 'Create workspace A2 department', 201, '/api/v1/hr/departments', authOptions(adminA2, { method: 'POST', body: { name: `People Runtime A2 ${runId}` } }))).body);
   const bDepartment = unwrap((await expectStatus(baseUrl, 'HR', 'ADMIN_B', 'Create organization B department', 201, '/api/v1/hr/departments', authOptions(adminB, { method: 'POST', body: { name: `People Runtime B ${runId}` } }))).body);
-  const adminDepartments = unwrap((await expectStatus(baseUrl, 'HR', 'ADMIN', 'List departments excludes A2/B', 200, '/api/v1/hr/departments', authOptions(adminA, { headers: { 'x-workspace-id': adminA2.workspaceId, 'x-tenant-id': adminB.tenantId } }))).body);
-  const leakedDepartment = Array.isArray(adminDepartments) && adminDepartments.some((row) => row.id === a2Department.id || row.id === bDepartment.id);
-  recordPersistence('HR', 'Department isolation', 'no leaked department', leakedDepartment ? 'leaked' : 'no leaked department', !leakedDepartment, 'department list remains token-workspace scoped under spoofed headers');
+  const adminDepartments = unwrap((await expectStatus(baseUrl, 'HR', 'ADMIN', 'List departments excludes A2/B', 200, '/api/v1/hr/departments', authOptions(adminA))).body);
+  const validDepartments = Array.isArray(adminDepartments) && adminDepartments.every((row) => row && typeof row.id === 'string');
+  const currentDepartmentPresent = validDepartments && adminDepartments.some((row) => row.id === department.id);
+  const leakedDepartment = validDepartments && adminDepartments.some((row) => row.id === a2Department.id || row.id === bDepartment.id);
+  recordPersistence('HR', 'Department isolation', 'current department present; no leaked department', !validDepartments ? 'invalid department list' : !currentDepartmentPresent ? 'current department missing' : leakedDepartment ? 'leaked' : 'current department present; no leaked department', validDepartments && currentDepartmentPresent && !leakedDepartment, 'department list contains the current workspace department and excludes A2/B');
+  await expectStatus(baseUrl, 'HR', 'ADMIN', 'Department list rejects spoofed headers', 403, '/api/v1/hr/departments', authOptions(adminA, { headers: { 'x-workspace-id': adminA2.workspaceId, 'x-tenant-id': adminB.tenantId } }));
 }
 
 async function verifyProjects(baseUrl, prisma, auths) {
@@ -422,7 +477,8 @@ async function verifyProjects(baseUrl, prisma, auths) {
   const bProject = unwrap((await expectStatus(baseUrl, 'Projects', 'ADMIN_B', 'Create organization B project', 201, '/api/v1/projects', authOptions(adminB, { method: 'POST', body: projectPayload('B') }))).body);
   await expectStatus(baseUrl, 'Projects', 'ADMIN', 'Cannot update workspace A2 project', 404, `/api/v1/projects/${a2Project.id}`, authOptions(adminA, { method: 'PATCH', body: { name: 'blocked' } }));
   await expectStatus(baseUrl, 'Projects', 'ADMIN', 'Cannot link task to workspace A2 project', 404, '/api/v1/projects/tasks', authOptions(adminA, { method: 'POST', body: { title: 'blocked task', projectId: a2Project.id } }));
-  await expectStatus(baseUrl, 'Projects', 'ADMIN', 'Cannot update organization B project', 404, `/api/v1/projects/${bProject.id}`, authOptions(adminA, { method: 'PATCH', body: { name: 'blocked' }, headers: { 'x-tenant-id': adminB.tenantId, 'x-workspace-id': adminB.workspaceId } }));
+  await expectStatus(baseUrl, 'Projects', 'ADMIN', 'Cannot update organization B project', 404, `/api/v1/projects/${bProject.id}`, authOptions(adminA, { method: 'PATCH', body: { name: 'blocked' } }));
+  await expectStatus(baseUrl, 'Projects', 'ADMIN', 'Cannot update organization B project with spoofed headers', 403, `/api/v1/projects/${bProject.id}`, authOptions(adminA, { method: 'PATCH', body: { name: 'blocked' }, headers: { 'x-tenant-id': adminB.tenantId, 'x-workspace-id': adminB.workspaceId } }));
 }
 
 async function verifyAnalyticsAndAi(baseUrl, prisma, auths) {
@@ -443,7 +499,8 @@ async function verifyAnalyticsAndAi(baseUrl, prisma, auths) {
 
   await expectStatus(baseUrl, 'Analytics', 'UNAUTHENTICATED', 'Summary denied', 401, '/api/v1/analytics/summary');
   await expectStatus(baseUrl, 'Analytics', 'NO_REQUIRED_PERMISSION', 'Summary denied', 403, '/api/v1/analytics/summary', authOptions(noPermissionA));
-  const summary = unwrap((await expectStatus(baseUrl, 'Analytics', 'ADMIN', 'Summary from live V1 data', 200, '/api/v1/analytics/summary', authOptions(adminA, { headers: { 'x-tenant-id': adminB.tenantId, 'x-workspace-id': adminA2.workspaceId } }))).body);
+  const summary = unwrap((await expectStatus(baseUrl, 'Analytics', 'ADMIN', 'Summary from live V1 data', 200, '/api/v1/analytics/summary', authOptions(adminA))).body);
+  await expectStatus(baseUrl, 'Analytics', 'ADMIN', 'Summary rejects spoofed headers', 403, '/api/v1/analytics/summary', authOptions(adminA, { headers: { 'x-tenant-id': adminB.tenantId, 'x-workspace-id': adminA2.workspaceId } }));
   const analyticsChecks = [
     ['CRM leads', 1, summary?.modules?.crm?.leads],
     ['CRM customers', 1, summary?.modules?.crm?.customers],
@@ -491,10 +548,18 @@ async function verifyAuthTenantWorkspace(baseUrl, app, prisma, principals, auths
   const { adminA } = principals;
   const { adminAuthA, adminA: adminRoleA, noPermissionA } = auths;
 
-  await expectStatus(baseUrl, 'Auth', 'PUBLIC', 'Duplicate email rejected', 409, '/api/v1/auth/signup', {
+  await expectStatus(baseUrl, 'Auth', 'PUBLIC', 'Join existing tenant without invitation denied', 401, '/api/v1/auth/signup', {
     method: 'POST',
-    body: { email: adminA.user.email, password, displayName: 'Duplicate', tenantId: adminA.session.tenantId, workspaceId: adminA.session.workspaceId },
+    body: { email: `v1-direct-tenant-${runId}@example.com`, password, displayName: 'V1 Direct Tenant Join', tenantId: adminA.session.tenantId },
   });
+  await expectStatus(baseUrl, 'Auth', 'PUBLIC', 'Join existing workspace without invitation denied', 401, '/api/v1/auth/signup', {
+    method: 'POST',
+    body: { email: `v1-direct-workspace-${runId}@example.com`, password, displayName: 'V1 Direct Workspace Join', workspaceId: adminA.session.workspaceId },
+  });
+  await expectStatus(baseUrl, 'Users', 'ADMIN', 'Duplicate email in current tenant rejected', 409, '/api/v1/users', authOptions(adminRoleA, {
+    method: 'POST',
+    body: { email: adminA.user.email, displayName: 'Duplicate' },
+  }));
   await expectStatus(baseUrl, 'Auth', 'PUBLIC', 'Weak password rejected', 400, '/api/v1/auth/signup', {
     method: 'POST',
     body: { email: `weak-${runId}@example.com`, password: 'short', displayName: 'Weak Runtime' },
@@ -544,8 +609,9 @@ async function verifyAuthTenantWorkspace(baseUrl, app, prisma, principals, auths
 
   await expectStatus(baseUrl, 'Workspace', 'UNAUTHENTICATED', 'Current workspace denied', 401, '/api/v1/workspaces/current');
   await expectStatus(baseUrl, 'Workspace', 'NO_REQUIRED_PERMISSION', 'Current workspace denied', 403, '/api/v1/workspaces/current', authOptions(noPermissionA));
-  const currentWorkspace = unwrap((await expectStatus(baseUrl, 'Workspace', 'ADMIN', 'Current workspace', 200, '/api/v1/workspaces/current', authOptions(adminRoleA, { headers: { 'x-workspace-id': org.id, 'x-tenant-id': org.id } }))).body);
-  recordPersistence('Workspace', 'Header spoofing current workspace', adminA.session.workspaceId, currentWorkspace?.id, currentWorkspace?.id === adminA.session.workspaceId, 'current workspace is derived from JWT context, not spoofed headers');
+  const currentWorkspace = unwrap((await expectStatus(baseUrl, 'Workspace', 'ADMIN', 'Current workspace', 200, '/api/v1/workspaces/current', authOptions(adminRoleA))).body);
+  recordPersistence('Workspace', 'Current workspace follows authenticated context', adminA.session.workspaceId, currentWorkspace?.id, currentWorkspace?.id === adminA.session.workspaceId, 'current workspace is derived from JWT context');
+  await expectStatus(baseUrl, 'Workspace', 'ADMIN', 'Current workspace rejects spoofed headers', 403, '/api/v1/workspaces/current', authOptions(adminRoleA, { headers: { 'x-workspace-id': org.id, 'x-tenant-id': org.id } }));
 
   const workspace = unwrap((await expectStatus(baseUrl, 'Workspace', 'ADMIN', 'Create workspace under new organization', 201, '/api/v1/workspaces', authOptions(adminRoleA, {
     method: 'POST',
@@ -651,6 +717,7 @@ async function main() {
       adminB: adminRoleB,
     };
 
+    await prepareFinanceFixtures(baseUrl, principals, adminAuthA);
     await verifyAuthTenantWorkspace(baseUrl, app, prisma, principals, auths);
     await verifyFinance(baseUrl, prisma, auths, { billingA, billingB });
     await verifyHr(baseUrl, prisma, auths);

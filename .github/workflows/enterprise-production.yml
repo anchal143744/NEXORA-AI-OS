@@ -33,13 +33,13 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: nexora
+          POSTGRES_DB: nexora_ci_test
           POSTGRES_USER: nexora
           POSTGRES_PASSWORD: change-me
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U nexora -d nexora"
+          --health-cmd "pg_isready -U nexora -d nexora_ci_test"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -53,7 +53,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     env:
-      DATABASE_URL: postgresql://nexora:change-me@localhost:5432/nexora?schema=public
+      DATABASE_URL: postgresql://nexora:change-me@localhost:5432/nexora_ci_test?schema=public
+      NEXORA_TEST_DATABASE_DISPOSABLE: "true"
       REDIS_URL: redis://localhost:6379
       JWT_SECRET: ci-jwt-secret-that-is-long-enough-for-validation
       JWT_ACCESS_SECRET: ci-access-secret-for-isolated-validation-only
@@ -91,6 +92,8 @@ jobs:
           });
           writeFileSync('.env', entries.join('\n') + '\n', { mode: 0o600, flag: 'wx' });
           NODE
+      - name: Verify disposable fixtures and tenant isolation
+        run: node --test tests/runtime-membership-fixtures.test.mjs tests/users-tenant-isolation.test.mjs
       - run: npm run test
       - run: npm run crm:rbac
       - run: npm run api:e2e

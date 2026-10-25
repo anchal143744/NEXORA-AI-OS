@@ -1,8 +1,12 @@
 ﻿import { spawn } from 'node:child_process';
 
-const baseUrl = process.env.NEXORA_API_URL || 'http://127.0.0.1:4000';
+import net from 'node:net';
+import { assertDisposableRuntimeDatabase } from './test-fixtures/runtime-membership.mjs';
+
+let baseUrl;
 const failures = [];
 let child;
+let childError;
 let childStdout = '';
 let childStderr = '';
 
@@ -11,6 +15,7 @@ function fail(message) {
 }
 
 async function request(path, options = {}) {
+  assertOwnedApiAlive();
   const response = await fetch(`${baseUrl}${path}`, {
     ...options,
     headers: {
@@ -39,27 +44,58 @@ async function safeRequest(path, options = {}) {
 async function waitForApi(timeoutMs = 25_000) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < timeoutMs) {
+    assertOwnedApiAlive();
     const result = await safeRequest('/api/v1/health/live');
-    if (result.response?.ok) return true;
+    if (result.response?.ok) { assertOwnedApiAlive(); return true; }
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   return false;
 }
 
 async function ensureApi() {
-  if (await waitForApi(2_000)) return false;
+  assertDisposableRuntimeDatabase();
+  if (process.env.NEXORA_API_URL) throw new Error('API e2e refuses an existing endpoint; it must start its own disposable API');
+  const port = await new Promise((resolve, reject) => {
+    const reservation = net.createServer();
+    reservation.once('error', reject);
+    reservation.listen(0, '127.0.0.1', () => {
+      const chosen = reservation.address().port;
+      reservation.close(error => error ? reject(error) : resolve(chosen));
+    });
+  });
+  baseUrl = `http://127.0.0.1:${port}`;
   child = spawn(process.execPath, ['apps/api/dist/main.js'], {
     cwd: process.cwd(),
-    env: { ...process.env, NODE_ENV: process.env.NODE_ENV || 'development' },
+    env: { ...process.env, PORT: String(port), API_PORT: String(port), NODE_ENV: process.env.NODE_ENV || 'development' },
+    windowsHide: true,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
+  child.once('error', error => { childError = error; });
   child.stdout.on('data', (chunk) => { childStdout += chunk.toString(); });
   child.stderr.on('data', (chunk) => { childStderr += chunk.toString(); });
   const online = await waitForApi(25_000);
   if (!online) {
-    fail(`API did not become healthy within 25 seconds. stdout=${childStdout.slice(-1200)} stderr=${childStderr.slice(-1200)}`);
+    throw new Error(`Owned API did not become healthy within 25 seconds. stdout=${childStdout.slice(-1200)} stderr=${childStderr.slice(-1200)}`);
   }
   return true;
+}
+
+function assertOwnedApiAlive() {
+  if (childError || !child || !Number.isSafeInteger(child.pid) || child.exitCode !== null || child.signalCode !== null) {
+    throw new Error(`Owned API exited or failed; no existing server is a fallback. ${childError?.message ?? childStderr.slice(-1200)}`);
+  }
+}
+
+async function stopOwnedApi() {
+  if (!child || !Number.isSafeInteger(child.pid) || child.exitCode !== null || child.signalCode !== null) return;
+  let timer;
+  try {
+    await new Promise((resolve, reject) => {
+      child.once('exit', resolve);
+      timer = setTimeout(() => reject(new Error('Owned API did not stop; retain the test environment for inspection')), 5_000);
+      child.kill();
+    });
+  } finally { clearTimeout(timer); }
 }
 
 async function main() {
@@ -126,11 +162,11 @@ async function main() {
     failures,
   }, null, 2));
 
-  if (failures.length) process.exit(1);
+  if (failures.length) process.exitCode = 1;
 }
 
 try {
   await main();
 } finally {
-  if (child && !child.killed) child.kill();
+  await stopOwnedApi();
 }
