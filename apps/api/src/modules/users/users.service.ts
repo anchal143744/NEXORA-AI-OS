@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../infrastructure/database/prisma.service';
 import { TenantContextService } from '../tenants/tenant-context.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -9,7 +9,10 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService, private readonly tenantContext: TenantContextService) {}
 
   async create(dto: CreateUserDto) {
-    const tenantId = dto.tenantId || this.tenantContext.currentTenantId();
+    const tenantId = this.tenantContext.currentTenantId();
+    if (dto.tenantId !== undefined && dto.tenantId !== tenantId) {
+      throw new ForbiddenException('User tenant must match the current tenant');
+    }
     const existing = await this.prisma.user.findUnique({ where: { tenantId_email: { tenantId, email: dto.email } } });
     if (existing) throw new ConflictException('User already exists');
     return this.prisma.user.create({ data: { tenantId, email: dto.email, displayName: dto.displayName, locale: dto.locale, status: 'ACTIVE' } });

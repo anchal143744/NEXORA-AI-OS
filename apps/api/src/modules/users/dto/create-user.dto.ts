@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateUserDto {
-  @ApiPropertyOptional({ description: 'Optional when x-tenant-id header is present' })
+  @ApiPropertyOptional({ description: 'If supplied, must match the authenticated current tenant; omitted values use that tenant' })
   @IsOptional()
   @IsUUID()
   tenantId?: string;
